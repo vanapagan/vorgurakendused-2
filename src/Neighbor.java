@@ -34,4 +34,14 @@ public class Neighbor {
     public void setAlive(boolean alive) {
         isAlive = alive;
     }
+
+    @Override
+    public String toString() {
+        return "Neighbor{" +
+                "index=" + index +
+                ", ip='" + ip + '\'' +
+                ", port=" + port +
+                ", isAlive=" + isAlive +
+                '}';
+    }
 }

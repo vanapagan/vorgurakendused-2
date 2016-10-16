@@ -66,7 +66,17 @@ class Worker extends Thread {
                 }
                 rd.close();
                 if (result.length() != 0) {
-                    System.out.print(result.toString());
+                    //System.out.println(result.toString());
+                }
+                String res = "[\"192.168.3.38:1215\", \"192.168.3.26:1215\"]";
+                String[] arr = result.toString().split(",");
+                ArrayList<String> list = new ArrayList<>();
+                for (String s : arr) {
+                    list.add(s.split("\"")[1]);
+                }
+                for (int i = 0; i < list.size(); i++) {
+                    Neighbor n = new Neighbor(i, list.get(i).split(":")[0], Integer.parseInt(list.get(i).split(":")[1]), true);
+                    System.out.println(n);
                 }
                 Thread.sleep(60 * 1000);
             }
