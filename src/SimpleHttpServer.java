@@ -1,14 +1,19 @@
 /**
  * Created by Kristo on 15.10.2016.
  */
+
 import com.sun.net.httpserver.HttpServer;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.InetSocketAddress;
+import java.io.InputStreamReader;
+import java.net.*;
+import java.util.ArrayList;
 
 public class SimpleHttpServer {
     private int port;
     private HttpServer server;
+    private ArrayList<Neighbor> neighbours = new ArrayList<>();
 
     public void Start(int port) {
         try {
@@ -22,6 +27,10 @@ public class SimpleHttpServer {
             server.createContext("/post", new Handlers.PostHandler());
             server.setExecutor(null);
             server.start();
+
+            Worker neighborWatcher  = new Worker(neighbours);
+            neighborWatcher.start();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -31,4 +40,43 @@ public class SimpleHttpServer {
         server.stop(0);
         System.out.println("server stopped");
     }
+
+}
+
+class Worker extends Thread {
+
+    ArrayList<Neighbor> neighbors;
+    //String url = "http://192.168.3.11:1215/getpeers";
+
+    Worker(ArrayList<Neighbor> neighbors) throws IOException {
+        this.neighbors = neighbors;
+    }
+
+    public void run() {
+        try {
+            while (true) {
+                StringBuilder result = new StringBuilder();
+                URL url = new URL("http://192.168.3.11:1215/getpeers");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String line;
+                while ((line = rd.readLine()) != null) {
+                    result.append(line);
+                }
+                rd.close();
+                System.out.println(result.toString());
+                Thread.sleep(5 * 1000);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
