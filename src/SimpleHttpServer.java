@@ -65,8 +65,10 @@ class Worker extends Thread {
                     result.append(line);
                 }
                 rd.close();
-                System.out.println(result.toString());
-                Thread.sleep(5 * 1000);
+                if (result.length() != 0) {
+                    
+                }
+                Thread.sleep(60 * 1000);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
