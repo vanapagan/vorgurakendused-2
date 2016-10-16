@@ -12,7 +12,6 @@ import java.util.*;
 
 public class Handlers {
     public static class RootHandler implements HttpHandler {
-
         @Override
         public void handle(HttpExchange he) throws IOException {
             String response = "<h1>Server start success if you see this message</h1>" + "<h1>Port: " + Main.port + "</h1>";
