@@ -75,8 +75,9 @@ public class Handlers {
 
         @Override
         public void handle(HttpExchange he) throws IOException {
+            System.out.println("Served by /get handler...");
             // parse request
-            Map<String, Object> parameters = new HashMap<String, Object>();
+            Map<String, Object> parameters = new HashMap<>();
             URI requestedUri = he.getRequestURI();
             String query = requestedUri.getRawQuery();
             parseQuery(query, parameters);
@@ -96,9 +97,9 @@ public class Handlers {
 
         @Override
         public void handle(HttpExchange he) throws IOException {
-            System.out.println("Served by /echoPost handler...");
+            System.out.println("Served by /post handler...");
             // parse request
-            Map<String, Object> parameters = new HashMap<String, Object>();
+            Map<String, Object> parameters = new HashMap<>();
             InputStreamReader isr = new InputStreamReader(he.getRequestBody(), "utf-8");
             BufferedReader br = new BufferedReader(isr);
             String query = br.readLine();
