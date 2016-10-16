@@ -66,7 +66,7 @@ class Worker extends Thread {
                 }
                 rd.close();
                 if (result.length() != 0) {
-                    
+                    System.out.print(result.toString());
                 }
                 Thread.sleep(60 * 1000);
             }
