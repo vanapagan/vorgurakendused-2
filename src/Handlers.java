@@ -36,11 +36,12 @@ public class Handlers {
 
             if (parameters.get("id") != null && parameters.get("url") != null) {
                 response = "OK";
+                he.sendResponseHeaders(200, response.length());
             } else {
                 response = "ERROR";
+                he.sendResponseHeaders(422, response.length());
             }
 
-            he.sendResponseHeaders(200, response.length());
             OutputStream os = he.getResponseBody();
             os.write(response.getBytes());
             os.close();
