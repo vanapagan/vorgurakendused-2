@@ -22,7 +22,40 @@ public class Handlers {
         }
     }
 
-    public static class EchoHeaderHandler implements HttpHandler {
+    public static class DownloadHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange he) throws IOException {
+
+            Map<String, Object> parameters = new HashMap<String, Object>();
+            URI requestedUri = he.getRequestURI();
+            String query = requestedUri.getRawQuery();
+            parseQuery(query, parameters);
+            // send response
+
+            String response;
+
+            if (parameters.get("id") != null && parameters.get("url") != null) {
+                response = "OK";
+            } else {
+                response = "ERROR";
+            }
+
+            he.sendResponseHeaders(200, response.length());
+            OutputStream os = he.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+
+            if (he.getRequestMethod().equals("GET")) {
+                new GetHandler().handle(he);
+            } else {
+                new PostHandler().handle(he);
+            }
+
+        }
+    }
+
+
+    public static class HeaderHandler implements HttpHandler {
 
         @Override
         public void handle(HttpExchange he) throws IOException {
@@ -38,7 +71,7 @@ public class Handlers {
         }
     }
 
-    public static class EchoGetHandler implements HttpHandler {
+    public static class GetHandler implements HttpHandler {
 
         @Override
         public void handle(HttpExchange he) throws IOException {
@@ -59,7 +92,7 @@ public class Handlers {
 
     }
 
-    public static class EchoPostHandler implements HttpHandler {
+    public static class PostHandler implements HttpHandler {
 
         @Override
         public void handle(HttpExchange he) throws IOException {
