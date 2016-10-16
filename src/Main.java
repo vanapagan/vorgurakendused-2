@@ -10,8 +10,8 @@ public class Main {
 		SimpleHttpServer httpServer = new SimpleHttpServer();
 		httpServer.Start(port);
 
-//		System.out.println(System.getProperty("user.dir"));
-//		System.out.println(Main.class.getClassLoader().getResource("").getPath());
+		System.out.println(System.getProperty("user.dir"));
+		System.out.println(Main.class.getClassLoader().getResource("").getPath());
 
     }
 }
