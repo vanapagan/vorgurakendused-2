@@ -5,6 +5,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -24,7 +25,8 @@ public class NetworkWatcher extends Thread {
     public void run() {
         try {
             while (true) {
-                System.out.println("Update network isAlive HashTable");
+                Date date = new Date();
+                System.out.println("Update network isAlive HashTable" + new SimpleDateFormat("HH.mm.ss.dd.MM").format(new Date()));
                 StringBuilder result = new StringBuilder();
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
@@ -48,7 +50,6 @@ public class NetworkWatcher extends Thread {
                             ((Neighbor) me.getValue()).setAlive(false);
                         }
                     }
-
 
                     for (String s : arr) {
                         String arrayItem = s.split("\"")[1];
