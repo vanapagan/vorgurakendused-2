@@ -33,7 +33,7 @@ public class Neighbor {
     @Override
     public String toString() {
         return "Neighbor{" +
-                ", ip='" + ip + '\'' +
+                "ip='" + ip + '\'' +
                 ", port=" + port +
                 ", isAlive=" + isAlive +
                 '}';

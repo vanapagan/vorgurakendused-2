@@ -24,6 +24,7 @@ public class NetworkWatcher extends Thread {
     public void run() {
         try {
             while (true) {
+                System.out.println("Update network isAlive HashTable");
                 StringBuilder result = new StringBuilder();
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
@@ -56,7 +57,7 @@ public class NetworkWatcher extends Thread {
 
                         if (!peers.containsKey(ip)) {
                             peers.put(ip, n);
-                            System.out.println("Added new peer to the watchlist: " + n.getIp());
+                            System.out.println("Added a new peer to the watchlist: " + n.getIp());
                         } else if (peers.containsKey(ip)) {
                             peers.get(ip).setAlive(true);
                         }
