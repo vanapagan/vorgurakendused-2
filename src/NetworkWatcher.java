@@ -13,8 +13,6 @@ import java.util.*;
  */
 public class NetworkWatcher extends Thread {
 
-    private ArrayList<Neighbor> neighbors;
-    private Integer index = -1;
     private LinkedHashMap<String, Neighbor> peers = new LinkedHashMap<String, Neighbor>();
     private URL url = new URL("http://192.168.3.11:1215/getpeers");
 
@@ -25,8 +23,7 @@ public class NetworkWatcher extends Thread {
     public void run() {
         try {
             while (true) {
-                Date date = new Date();
-                System.out.println("Update network isAlive HashTable " + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
+                System.out.println("Update network isAlive HashTable " + new SimpleDateFormat("HH:mm:ss yyyy.MM.dd", Locale.UK).format(new Date()));
                 StringBuilder result = new StringBuilder();
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
@@ -81,8 +78,7 @@ public class NetworkWatcher extends Thread {
         }
     }
 
-    private Integer getNextIndex() {
-        return ++index;
+    public LinkedHashMap<String, Neighbor> getPeers() {
+        return peers;
     }
-
 }
