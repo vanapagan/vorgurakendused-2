@@ -38,7 +38,7 @@ public class Handlers {
                 response = "OK";
                 he.sendResponseHeaders(200, response.length());
             } else {
-                response = "ERROR";
+                response = "ERROR - missing either 'id' or 'url' parameter or both...";
                 he.sendResponseHeaders(422, response.length());
             }
 
