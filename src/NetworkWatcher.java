@@ -20,10 +20,10 @@ public class NetworkWatcher extends Thread {
         this.peers = peers;
     }
 
-    public void run() {
+    public synchronized void run() {
         try {
             while (true) {
-                System.out.println("Update network isAlive HashTable " + new SimpleDateFormat("HH:mm:ss yyyy.MM.dd", Locale.UK).format(new Date()));
+                System.out.println("Update network isAlive HashTable " + new SimpleDateFormat("HH:mm:ss dd.MM.yyyy", Locale.UK).format(new Date()));
                 StringBuilder result = new StringBuilder();
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
