@@ -8,15 +8,10 @@ public class Neighbor {
     private int port;
     private boolean isAlive;
 
-    public Neighbor(int index, String ip, int port, boolean isAlive) {
-        this.index = index;
+    public Neighbor(String ip, int port, boolean isAlive) {
         this.ip = ip;
         this.port = port;
         this.isAlive = isAlive;
-    }
-
-    public int getIndex() {
-        return index;
     }
 
     public String getIp() {
@@ -38,7 +33,6 @@ public class Neighbor {
     @Override
     public String toString() {
         return "Neighbor{" +
-                "index=" + index +
                 ", ip='" + ip + '\'' +
                 ", port=" + port +
                 ", isAlive=" + isAlive +
