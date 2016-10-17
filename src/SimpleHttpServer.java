@@ -6,13 +6,13 @@ import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 public class SimpleHttpServer {
     private int port;
     private HttpServer server;
-    private ArrayList<Neighbor> neighbours = new ArrayList<>();
+    private static LinkedHashMap<String, Request> out = new LinkedHashMap<String, Request>();
+    private static LinkedHashMap<String, Request> in = new LinkedHashMap<String, Request>();
 
     public void Start(int port) {
         try {
@@ -42,7 +42,12 @@ public class SimpleHttpServer {
         System.out.println("server stopped");
     }
 
+    public static LinkedHashMap<String, Request> getOut() {
+        return out;
+    }
 
-
+    public static LinkedHashMap<String, Request> getIn() {
+        return in;
+    }
 }
 

@@ -10,7 +10,7 @@ import java.net.URI;
 import java.net.URLDecoder;
 import java.util.*;
 
-public class Handlers {
+public class Handlers extends SimpleHttpServer{
     public static class RootHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange he) throws IOException {
@@ -46,11 +46,19 @@ public class Handlers {
             os.write(response.getBytes());
             os.close();
 
-            if (he.getRequestMethod().equals("GET")) {
-                new GetHandler().handle(he);
-            } else {
-                new PostHandler().handle(he);
+            if (parameters.get("id") != null && parameters.get("url") != null) {
+                Request request = new Request(parameters.get("id").toString(), parameters.get("url").toString());
+                getIn().put(parameters.get("id").toString(), request);
+
+                if (he.getRequestMethod().equals("GET")) {
+                    new GetHandler().handle(he);
+                } else {
+                    new PostHandler().handle(he);
+                }
+
             }
+
+
 
         }
     }
