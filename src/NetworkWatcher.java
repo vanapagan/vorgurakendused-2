@@ -26,7 +26,7 @@ public class NetworkWatcher extends Thread {
         try {
             while (true) {
                 Date date = new Date();
-                System.out.println("Update network isAlive HashTable" + new SimpleDateFormat("HH.mm.ss.dd.MM").format(new Date()));
+                System.out.println("Update network isAlive HashTable " + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
                 StringBuilder result = new StringBuilder();
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
