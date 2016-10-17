@@ -13,6 +13,7 @@ public class SimpleHttpServer {
     private HttpServer server;
     private static LinkedHashMap<String, Request> out = new LinkedHashMap<String, Request>();
     private static LinkedHashMap<String, Request> in = new LinkedHashMap<String, Request>();
+    private static LinkedHashMap<String, Neighbor> peers = new LinkedHashMap<String, Neighbor>();
 
     public void Start(int port) {
         try {
@@ -27,7 +28,6 @@ public class SimpleHttpServer {
             server.setExecutor(null);
             server.start();
 
-            LinkedHashMap<String, Neighbor> peers = new LinkedHashMap<>();
             NetworkWatcher nw = new NetworkWatcher(peers);
             nw.start();
 
@@ -48,6 +48,10 @@ public class SimpleHttpServer {
 
     public static LinkedHashMap<String, Request> getIn() {
         return in;
+    }
+
+    public static LinkedHashMap<String, Neighbor> getPeers() {
+        return peers;
     }
 }
 
