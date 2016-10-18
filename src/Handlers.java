@@ -111,7 +111,7 @@ public class Handlers extends SimpleHttpServer {
                         System.out.println("Constructed url: " + url);
                         HttpURLConnection conn = null;
                         try {
-                            if (InetAddress.getByName(url.toString()).isReachable(3)) {
+                            if (InetAddress.getByName("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort()).isReachable(3)) {
                                 System.out.println("is reachable");
                             } else {
                                 System.out.println("is not");
