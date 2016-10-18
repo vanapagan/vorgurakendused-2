@@ -97,6 +97,7 @@ public class Handlers extends SimpleHttpServer {
                 double d = new Random().nextDouble();
                 if (d >= 0.0001) {
                     //TODO download file and construct /file post message
+                    System.out.println("I will download");
                     StringBuilder result = new StringBuilder();
                     URL url = new URL(parameters.get("url").toString());
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
