@@ -105,7 +105,7 @@ public class Handlers extends SimpleHttpServer {
                     BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                     String line;
                     int status = conn.getResponseCode();
-                    String mime = conn.getContentEncoding();
+                    String mime = conn.getContentType();
 
                     while ((line = rd.readLine()) != null) {
                         result.append(line);
