@@ -49,13 +49,6 @@ public class Handlers extends SimpleHttpServer {
             os.write(response.getBytes());
             os.close();
 
-            if (he.getRequestMethod().equals("GET")) {
-                System.out.println("Received a request from " + he.getRequestHeaders().getFirst("Host"));
-                new GetHandler().handle(he);
-            } else {
-                new PostHandler().handle(he);
-            }
-
             if (parameters.get("id") != null && parameters.get("url") != null) {
                 Request request = new Request(parameters.get("id").toString(), parameters.get("url").toString());
                 getIn().put(parameters.get("id").toString(), request);
