@@ -103,6 +103,9 @@ public class Handlers extends SimpleHttpServer {
                     Iterator iterator = set.iterator();
                     while (iterator.hasNext()) {
                         Map.Entry me = (Map.Entry) iterator.next();
+                        if (((Neighbor) me.getValue()).getIp().equals("192.168.39.39") && iterator.hasNext()) {
+                            me = (Map.Entry) iterator.next();
+                        }
                         if (!((Neighbor) me.getValue()).isAlive()) {
                             continue;
                         }
