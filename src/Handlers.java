@@ -64,6 +64,7 @@ public class Handlers extends SimpleHttpServer {
                     Set set = getPeers().entrySet();
 
                     Iterator iterator = set.iterator();
+                    iterator.next();
                     while(iterator.hasNext()) {
                         Map.Entry me = (Map.Entry)iterator.next();
                         if (!((Neighbor) me.getValue()).isAlive()) {
