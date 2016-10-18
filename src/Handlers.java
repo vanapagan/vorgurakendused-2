@@ -14,6 +14,43 @@ import java.net.URLDecoder;
 import java.util.*;
 
 public class Handlers extends SimpleHttpServer {
+    @SuppressWarnings("unchecked")
+    public static void parseQuery(String query, Map<String, Object> parameters) throws UnsupportedEncodingException {
+
+        if (query != null) {
+            String pairs[] = query.split("[&]");
+
+            for (String pair : pairs) {
+                String param[] = pair.split("[=]");
+
+                String key = null;
+                String value = null;
+                if (param.length > 0) {
+                    key = URLDecoder.decode(param[0], System.getProperty("file.encoding"));
+                }
+
+                if (param.length > 1) {
+                    value = URLDecoder.decode(param[1], System.getProperty("file.encoding"));
+                }
+
+                if (parameters.containsKey(key)) {
+                    Object obj = parameters.get(key);
+                    if (obj instanceof List<?>) {
+                        List<String> values = (List<String>) obj;
+                        values.add(value);
+                    } else if (obj instanceof String) {
+                        List<String> values = new ArrayList<String>();
+                        values.add((String) obj);
+                        values.add(value);
+                        parameters.put(key, values);
+                    }
+                } else {
+                    parameters.put(key, value);
+                }
+            }
+        }
+    }
+
     public static class RootHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange he) throws IOException {
@@ -26,6 +63,9 @@ public class Handlers extends SimpleHttpServer {
     }
 
     public static class DownloadHandler implements HttpHandler {
+
+        private final String USER_AGENT = "Mozilla/5.0";
+
         @Override
         public void handle(HttpExchange he) throws IOException {
 
@@ -49,64 +89,67 @@ public class Handlers extends SimpleHttpServer {
             os.write(response.getBytes());
             os.close();
 
-            if (parameters.get("id") != null && parameters.get("url") != null) {
-                Request request = new Request(parameters.get("id").toString(), parameters.get("url").toString());
-                getIn().put(parameters.get("id").toString(), request);
+            try {
+                if (parameters.get("id") != null && parameters.get("url") != null) {
+                    Request request = new Request(parameters.get("id").toString(), parameters.get("url").toString());
+                    getIn().put(parameters.get("id").toString(), request);
 
-                double d = new Random().nextDouble();
-                if (d <= 0.0001) {
-                    //TODO download file with and construct /file post message
+                    double d = new Random().nextDouble();
+                    if (d <= 0.0001) {
+                        //TODO download file with and construct /file post message
 
-                } else {
-                    //TODO do not download, but send request to everyone else in the network
-                    Set set = getPeers().entrySet();
+                    } else {
+                        //TODO do not download, but send request to everyone else in the network
+                        Set set = getPeers().entrySet();
 
-                    Iterator iterator = set.iterator();
-                    while(iterator.hasNext()) {
-                        Map.Entry me = (Map.Entry)iterator.next();
-                        if (!((Neighbor) me.getValue()).isAlive()) {
-                            continue;
-                        }
-                        me = (Map.Entry)iterator.next();
-                        URL url = new URL("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "/download?" + "id=" + parameters.get("id").toString() + "&" + "url=" + parameters.get("url").toString());
-                        System.out.println(url);
-                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                        if (conn.getResponseCode() == 200) {
-                            System.out.println("Connection opened " + conn.getResponseCode());
-                            conn.setRequestMethod("GET");
-                            //BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                            System.out.println("Connection opened");
-                            System.out.println("Forwarded message to " + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort());
-
-                            String line;
-                            StringBuilder result = null;
-                            /*
-                            while ((line = rd.readLine()) != null) {
-                                result.append(line);
+                        Iterator iterator = set.iterator();
+                        while (iterator.hasNext()) {
+                            Map.Entry me = (Map.Entry) iterator.next();
+                            if (!((Neighbor) me.getValue()).isAlive()) {
+                                continue;
                             }
-                            rd.close();*/
+                            me = (Map.Entry) iterator.next();
 
-                            System.out.println("Received a reply from " + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort());
-                        } else {
-                            continue;
+                            URL url = new URL("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "/download?" + "id=" + parameters.get("id").toString() + "&" + "url=" + parameters.get("url").toString());
+                            System.out.println(url);
+                            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                            if (conn.getResponseCode() == 200) {
+                                System.out.println("Connection opened " + conn.getResponseCode());
+                                conn.setRequestMethod("GET");
+                                BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                                System.out.println("Connection opened");
+                                System.out.println("Forwarded message to " + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort());
+
+                                String line;
+                                StringBuilder result = null;
+
+                                while ((line = rd.readLine()) != null) {
+                                    result.append(line);
+                                }
+                                rd.close();
+
+                                System.out.println("Received a reply from " + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort());
+                            } else {
+                                continue;
+                            }
                         }
+
+                    }
+
+                    if (he.getRequestMethod().equals("GET")) {
+                        new GetHandler().handle(he);
+                    } else {
+                        new PostHandler().handle(he);
                     }
 
                 }
-
-                if (he.getRequestMethod().equals("GET")) {
-                    new GetHandler().handle(he);
-                } else {
-                    new PostHandler().handle(he);
-                }
-
+            } catch (Exception e) {
+                System.out.println(e);
             }
-
 
 
         }
     }
-
 
     public static class HeaderHandler implements HttpHandler {
 
@@ -166,43 +209,6 @@ public class Handlers extends SimpleHttpServer {
             os.write(response.toString().getBytes());
             os.close();
 
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public static void parseQuery(String query, Map<String, Object> parameters) throws UnsupportedEncodingException {
-
-        if (query != null) {
-            String pairs[] = query.split("[&]");
-
-            for (String pair : pairs) {
-                String param[] = pair.split("[=]");
-
-                String key = null;
-                String value = null;
-                if (param.length > 0) {
-                    key = URLDecoder.decode(param[0], System.getProperty("file.encoding"));
-                }
-
-                if (param.length > 1) {
-                    value = URLDecoder.decode(param[1], System.getProperty("file.encoding"));
-                }
-
-                if (parameters.containsKey(key)) {
-                    Object obj = parameters.get(key);
-                    if (obj instanceof List<?>) {
-                        List<String> values = (List<String>) obj;
-                        values.add(value);
-                    } else if (obj instanceof String) {
-                        List<String> values = new ArrayList<String>();
-                        values.add((String) obj);
-                        values.add(value);
-                        parameters.put(key, values);
-                    }
-                } else {
-                    parameters.put(key, value);
-                }
-            }
         }
     }
 }
