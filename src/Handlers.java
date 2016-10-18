@@ -143,8 +143,8 @@ public class Handlers extends SimpleHttpServer {
                     }
 
                 }
-            } catch (Exception e) {
-                System.out.println(e);
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
             }
 
 
