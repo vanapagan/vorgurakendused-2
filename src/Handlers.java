@@ -64,10 +64,9 @@ public class Handlers extends SimpleHttpServer {
 
     public static class DownloadHandler implements HttpHandler {
 
-        private final String USER_AGENT = "Mozilla/5.0";
-
         @Override
         public void handle(HttpExchange he) throws IOException {
+
 
             Map<String, Object> parameters = new HashMap<String, Object>();
             URI requestedUri = he.getRequestURI();
@@ -84,6 +83,8 @@ public class Handlers extends SimpleHttpServer {
                 response = "ERROR - missing either 'id' or 'url' parameter or both...";
                 he.sendResponseHeaders(422, response.length());
             }
+
+            System.out.println("Received a /download request");
 
             OutputStream os = he.getResponseBody();
             os.write(response.getBytes());
@@ -151,6 +152,8 @@ public class Handlers extends SimpleHttpServer {
 
                 }
             } catch (IllegalStateException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
