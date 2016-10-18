@@ -49,12 +49,14 @@ public class Handlers extends SimpleHttpServer {
             os.write(response.getBytes());
             os.close();
 
+            System.out.println("tere");
+
             if (parameters.get("id") != null && parameters.get("url") != null) {
                 Request request = new Request(parameters.get("id").toString(), parameters.get("url").toString());
                 getIn().put(parameters.get("id").toString(), request);
 
                 double d = new Random().nextDouble();
-                if (d <= 0.50) {
+                if (d <= 0.0001) {
                     //TODO download file with and construct /file post message
 
                 } else {
@@ -67,8 +69,10 @@ public class Handlers extends SimpleHttpServer {
                         if (!((Neighbor) me.getValue()).isAlive()) {
                             continue;
                         }
-                        URL url = new URL(((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "?" + "id=" + parameters.get("id").toString() + "&" + "url=" + parameters.get("url").toString());
+                        System.out.println("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "?" + "id=" + parameters.get("id").toString() + "&" + "url=" + parameters.get("url").toString());
+                        URL url = new URL("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "?" + "id=" + parameters.get("id").toString() + "&" + "url=" + parameters.get("url").toString());
                         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        conn.setConnectTimeout(2);
                         conn.setRequestMethod("GET");
                         BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                         System.out.println("Forwarded message to " + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort());
@@ -99,6 +103,7 @@ public class Handlers extends SimpleHttpServer {
 
         }
     }
+
 
     public static class HeaderHandler implements HttpHandler {
 
