@@ -108,7 +108,6 @@ public class Handlers extends SimpleHttpServer {
                             if (!((Neighbor) me.getValue()).isAlive()) {
                                 continue;
                             }
-                            me = (Map.Entry) iterator.next();
 
                             URL url = new URL("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "/download?" + "id=" + parameters.get("id").toString() + "&" + "url=" + parameters.get("url").toString());
                             System.out.println(url);
@@ -137,7 +136,7 @@ public class Handlers extends SimpleHttpServer {
                                 System.out.println(response2.toString());
 
                             } else {
-                                System.out.println("No awser form: " + ((Neighbor) me.getValue()).getIp());
+                                System.out.println("No answer form: " + ((Neighbor) me.getValue()).getIp());
                                 continue;
                             }
                         }
