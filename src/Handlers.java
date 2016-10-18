@@ -90,71 +90,73 @@ public class Handlers extends SimpleHttpServer {
             os.write(response.getBytes());
             os.close();
 
-            try {
-                if (parameters.get("id") != null && parameters.get("url") != null) {
-                    Request request = new Request(parameters.get("id").toString(), parameters.get("url").toString());
-                    getIn().put(parameters.get("id").toString(), request);
 
-                    double d = new Random().nextDouble();
-                    if (d <= 0.0001) {
-                        //TODO download file with and construct /file post message
+            if (parameters.get("id") != null && parameters.get("url") != null) {
+                Request request = new Request(parameters.get("id").toString(), parameters.get("url").toString());
+                getIn().put(parameters.get("id").toString(), request);
 
-                    } else {
-                        //TODO do not download, but send request to everyone else in the network
-                        Set set = getPeers().entrySet();
+                double d = new Random().nextDouble();
+                if (d <= 0.0001) {
+                    //TODO download file with and construct /file post message
 
-                        Iterator iterator = set.iterator();
-                        while (iterator.hasNext()) {
-                            Map.Entry me = (Map.Entry) iterator.next();
-                            if (!((Neighbor) me.getValue()).isAlive()) {
-                                continue;
-                            }
+                } else {
+                    //TODO do not download, but send request to everyone else in the network
+                    Set set = getPeers().entrySet();
 
-                            URL url = new URL("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "/download?" + "id=" + parameters.get("id").toString() + "&" + "url=" + parameters.get("url").toString());
-                            System.out.println(url);
-                            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                            if (conn.getResponseCode() == 200) {
-                                System.out.println("Connection opened " + conn.getResponseCode());
-
-                                System.out.println("Sending request to URL : " + url);
-                                System.out.println("Response Code : " + conn.getResponseCode());
-                                System.out.println("Response Message : " + conn.getResponseMessage());
-
-                                BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                                System.out.println("Connection opened");
-                                System.out.println("Forwarded message to " + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort());
-
-                                BufferedReader in = new BufferedReader(
-                                        new InputStreamReader(conn.getInputStream()));
-                                String line;
-                                StringBuffer response2 = new StringBuffer();
-
-                                while ((line = in.readLine()) != null) {
-                                    response2.append(line);
-                                }
-                                in.close();
-
-                                System.out.println(response2.toString());
-
-                            } else {
-                                System.out.println("No answer form: " + ((Neighbor) me.getValue()).getIp());
-                                continue;
-                            }
+                    Iterator iterator = set.iterator();
+                    while (iterator.hasNext()) {
+                        Map.Entry me = (Map.Entry) iterator.next();
+                        if (!((Neighbor) me.getValue()).isAlive()) {
+                            continue;
                         }
 
-                    }
+                        URL url = new URL("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "/download?" + "id=" + parameters.get("id").toString() + "&" + "url=" + parameters.get("url").toString());
+                        System.out.println("Constructed url: " + url);
+                        HttpURLConnection conn = null;
+                        try {
+                            conn = (HttpURLConnection) url.openConnection();
+                        } catch (IllegalStateException e) {
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        if (conn.getResponseCode() == 200) {
+                            System.out.println("Connection opened " + conn.getResponseCode());
 
-                    if (he.getRequestMethod().equals("GET")) {
-                        new GetHandler().handle(he);
-                    } else {
-                        new PostHandler().handle(he);
+                            System.out.println("Sending request to URL : " + url);
+                            System.out.println("Response Code : " + conn.getResponseCode());
+                            System.out.println("Response Message : " + conn.getResponseMessage());
+
+                            BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                            System.out.println("Connection opened");
+                            System.out.println("Forwarded message to " + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort());
+
+                            BufferedReader in = new BufferedReader(
+                                    new InputStreamReader(conn.getInputStream()));
+                            String line;
+                            StringBuffer response2 = new StringBuffer();
+
+                            while ((line = in.readLine()) != null) {
+                                response2.append(line);
+                            }
+                            in.close();
+
+                            System.out.println(response2.toString());
+
+                        } else {
+                            System.out.println("No answer form: " + ((Neighbor) me.getValue()).getIp());
+                            continue;
+                        }
                     }
 
                 }
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
+
+                if (he.getRequestMethod().equals("GET")) {
+                    new GetHandler().handle(he);
+                } else {
+                    new PostHandler().handle(he);
+                }
+
             }
 
 
