@@ -120,7 +120,7 @@ public class Handlers extends SimpleHttpServer {
                         sb.append("}");
                     } else {
                         sb.append("{\"status\":");
-                        sb.append(conn.getResponseCode());
+                        sb.append(status);
                         sb.append(", \"mime-type\":\"");
                         sb.append(mime + "\", ");
                         sb.append("\"content\":");
@@ -129,7 +129,7 @@ public class Handlers extends SimpleHttpServer {
                     }
 
                     String responseBody = sb.toString();
-                    System.out.println(responseBody);
+                    //System.out.println(responseBody);
 
                 } else {
                     //TODO do not download, but send request to everyone else in the network
