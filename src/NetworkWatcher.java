@@ -56,12 +56,12 @@ public class NetworkWatcher extends Thread {
 
                         if (!peers.containsKey(ip)) {
                             peers.put(ip, n);
-                            System.out.println("Added a new peer to the watchlist: " + n.getIp());
+                            //System.out.println("Added a new peer to the watchlist: " + n.getIp());
                         } else if (peers.containsKey(ip)) {
                             peers.get(ip).setAlive(true);
                         }
 
-                        System.out.println(n.toString());
+                        //System.out.println(n.toString());
 
                     }
                 }

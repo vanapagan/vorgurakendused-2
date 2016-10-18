@@ -116,7 +116,7 @@ public class Handlers extends SimpleHttpServer {
                             if (conn.getResponseCode() == 200) {
                                 System.out.println("Connection opened " + conn.getResponseCode());
 
-                                System.out.println("\nSending request to URL : " + url);
+                                System.out.println("Sending request to URL : " + url);
                                 System.out.println("Response Code : " + conn.getResponseCode());
                                 System.out.println("Response Message : " + conn.getResponseMessage());
 
