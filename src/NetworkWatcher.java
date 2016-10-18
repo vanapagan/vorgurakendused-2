@@ -14,19 +14,18 @@ import java.util.*;
 public class NetworkWatcher extends Thread {
 
     private LinkedHashMap<String, Neighbor> peers = new LinkedHashMap<String, Neighbor>();
-    //private URL url = new URL("http://192.168.3.11:1215/getpeers");
-    private URL google = new URL("http://google.com");
+    private URL url = new URL("http://192.168.3.11:1215/getpeers");
 
     NetworkWatcher(LinkedHashMap<String, Neighbor> peers) throws IOException {
         this.peers = peers;
     }
 
-    public void run() {
+    public synchronized void run() {
         try {
             while (true) {
                 System.out.println("Update network isAlive HashTable " + new SimpleDateFormat("HH:mm:ss dd.MM.yyyy", Locale.UK).format(new Date()));
                 StringBuilder result = new StringBuilder();
-                HttpURLConnection conn = (HttpURLConnection) google.openConnection();
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 String line;
@@ -37,7 +36,7 @@ public class NetworkWatcher extends Thread {
                 rd.close();
                 if (!result.equals("[]")) {
                     String res = "[\"192.168.3.38:1215\", \"192.168.3.26:1215\"]";
-                    String[] arr = res.toString().split(",");
+                    String[] arr = result.toString().split(",");
 
                     if (peers.size() > 0) {
                         Set set = peers.entrySet();
