@@ -115,8 +115,6 @@ public class Handlers extends SimpleHttpServer {
                             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                             if (conn.getResponseCode() == 200) {
                                 System.out.println("Connection opened " + conn.getResponseCode());
-                                conn.setRequestProperty("User-Agent", USER_AGENT);
-                                conn.setRequestProperty("Accept-Charset", "UTF-8");
 
                                 System.out.println("\nSending request to URL : " + url);
                                 System.out.println("Response Code : " + conn.getResponseCode());
