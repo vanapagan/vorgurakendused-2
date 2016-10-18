@@ -6,11 +6,9 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLDecoder;
+import java.net.*;
 import java.util.*;
 
 public class Handlers extends SimpleHttpServer {
@@ -128,8 +126,39 @@ public class Handlers extends SimpleHttpServer {
                         sb.append("}");
                     }
 
-                    String responseBody = sb.toString();
+                    String body = sb.toString();
                     System.out.println("ResponseBody constructed");
+
+                    StringBuilder tokenUri = new StringBuilder("id=");
+                    tokenUri.append(URLEncoder.encode(body,"UTF-8"));
+
+                    String url2 = he.getRequestHeaders().getFirst("Host") + "/file";
+                    URL obj = new URL(url2);
+                    HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+
+                    con.setRequestMethod("POST");
+                    con.setRequestProperty("Accept-Language", "UTF-8");
+
+                    con.setDoOutput(true);
+                    OutputStreamWriter outputStreamWriter = new OutputStreamWriter(con.getOutputStream());
+                    outputStreamWriter.write(tokenUri.toString());
+                    outputStreamWriter.flush();
+
+                    int responseCode = con.getResponseCode();
+                    System.out.println("\nSending 'POST' request to URL : " + url2);
+                    System.out.println("Post parameters : " + sb.toString());
+                    System.out.println("Response Code : " + responseCode);
+
+                    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    String inputLine;
+                    StringBuffer response2 = new StringBuffer();
+
+                    while ((inputLine = in.readLine()) != null) {
+                        response2.append(inputLine);
+                    }
+                    in.close();
+
+                    System.out.println(response2.toString());
 
                 } else {
                     //TODO do not download, but send request to everyone else in the network
