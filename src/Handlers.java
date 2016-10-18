@@ -133,6 +133,7 @@ public class Handlers extends SimpleHttpServer {
                     tokenUri.append(URLEncoder.encode(body,"UTF-8"));
 
                     String url2 = he.getRequestHeaders().getFirst("Host") + "/file";
+                    System.out.println(url2);
                     URL obj = new URL(url2);
                     HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
 
