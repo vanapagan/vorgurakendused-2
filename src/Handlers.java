@@ -88,7 +88,6 @@ public class Handlers extends SimpleHttpServer {
                 }
 
                 if (he.getRequestMethod().equals("GET")) {
-                    new HeaderHandler().handle(he);
                     Headers headers = he.getRequestHeaders();
                     Set<Map.Entry<String, List<String>>> entries = headers.entrySet();
                     String host = he.getRequestHeaders().getFirst("Host");
