@@ -111,12 +111,8 @@ public class Handlers extends SimpleHttpServer {
                         System.out.println("Constructed url: " + url);
                         HttpURLConnection conn = null;
                         try {
-                            if (InetAddress.getByName("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort()).isReachable(3)) {
-                                System.out.println("is reachable");
-                            } else {
-                                System.out.println("is not");
-                            }
-
+                            conn.setConnectTimeout(2000);
+                            conn.setReadTimeout(2000);
                             conn = (HttpURLConnection) url.openConnection();
                         } catch (IllegalStateException e) {
                             e.printStackTrace();
