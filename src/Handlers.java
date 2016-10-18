@@ -88,14 +88,6 @@ public class Handlers extends SimpleHttpServer {
                 }
 
                 if (he.getRequestMethod().equals("GET")) {
-                    Headers headers = he.getRequestHeaders();
-                    Set<Map.Entry<String, List<String>>> entries = headers.entrySet();
-                    String host = he.getRequestHeaders().getFirst("Host");
-                    if (host != null) {
-                        System.out.println("Host didn't provide a host address!");
-                    } else {
-                        System.out.println("Received a request from: " + host);
-                    }
                     System.out.println("Request URI: " + he.getRequestURI());
                     new GetHandler().handle(he);
                 } else {
