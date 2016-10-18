@@ -116,19 +116,29 @@ public class Handlers extends SimpleHttpServer {
                             if (conn.getResponseCode() == 200) {
                                 System.out.println("Connection opened " + conn.getResponseCode());
                                 conn.setRequestMethod("GET");
+                                conn.setRequestProperty("User-Agent", USER_AGENT);
+                                conn.setRequestProperty("Accept-Charset", "UTF-8");
+
+                                System.out.println("\nSending request to URL : " + url);
+                                System.out.println("Response Code : " + conn.getResponseCode());
+                                System.out.println("Response Message : " + conn.getResponseMessage());
+
                                 BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                                 System.out.println("Connection opened");
                                 System.out.println("Forwarded message to " + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort());
 
+                                BufferedReader in = new BufferedReader(
+                                        new InputStreamReader(conn.getInputStream()));
                                 String line;
-                                StringBuilder result = null;
+                                StringBuffer response2 = new StringBuffer();
 
-                                while ((line = rd.readLine()) != null) {
-                                    result.append(line);
+                                while ((line = in.readLine()) != null) {
+                                    response2.append(line);
                                 }
-                                rd.close();
+                                in.close();
 
-                                System.out.println("Received a reply from " + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort());
+                                System.out.println(response2.toString());
+
                             } else {
                                 continue;
                             }
