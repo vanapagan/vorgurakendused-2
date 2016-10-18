@@ -87,6 +87,7 @@ public class Handlers extends SimpleHttpServer{
                 }
 
                 if (he.getRequestMethod().equals("GET")) {
+                    System.out.println("Recieved message from " + he.getRequestURI());
                     new GetHandler().handle(he);
                 } else {
                     new PostHandler().handle(he);
