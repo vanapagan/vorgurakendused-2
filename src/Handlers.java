@@ -115,6 +115,7 @@ public class Handlers extends SimpleHttpServer {
 
                     StringBuilder sb = new StringBuilder();
                     if (conn.getResponseCode() != 200) {
+                        System.out.println("Http error " + conn.getResponseCode());
                         sb.append("{\"status\":");
                         sb.append(conn.getResponseCode());
                         sb.append("}");
