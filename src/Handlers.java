@@ -7,10 +7,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLDecoder;
+import java.net.*;
 import java.util.*;
 
 public class Handlers extends SimpleHttpServer {
@@ -114,6 +111,12 @@ public class Handlers extends SimpleHttpServer {
                         System.out.println("Constructed url: " + url);
                         HttpURLConnection conn = null;
                         try {
+                            if (InetAddress.getByName(url.toString()).isReachable(3)) {
+                                System.out.println("is reachable");
+                            } else {
+                                System.out.println("is not");
+                            }
+
                             conn = (HttpURLConnection) url.openConnection();
                         } catch (IllegalStateException e) {
                             e.printStackTrace();
