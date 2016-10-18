@@ -49,8 +49,6 @@ public class Handlers extends SimpleHttpServer {
             os.write(response.getBytes());
             os.close();
 
-            System.out.println("tere");
-
             if (parameters.get("id") != null && parameters.get("url") != null) {
                 Request request = new Request(parameters.get("id").toString(), parameters.get("url").toString());
                 getIn().put(parameters.get("id").toString(), request);
@@ -64,12 +62,12 @@ public class Handlers extends SimpleHttpServer {
                     Set set = getPeers().entrySet();
 
                     Iterator iterator = set.iterator();
-                    iterator.next();
                     while(iterator.hasNext()) {
                         Map.Entry me = (Map.Entry)iterator.next();
                         if (!((Neighbor) me.getValue()).isAlive()) {
                             continue;
                         }
+                        me = (Map.Entry)iterator.next();
                         URL url = new URL("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "/download?" + "id=" + parameters.get("id").toString() + "&" + "url=" + parameters.get("url").toString());
                         System.out.println(url);
                         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
