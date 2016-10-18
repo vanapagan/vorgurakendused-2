@@ -69,8 +69,8 @@ public class Handlers extends SimpleHttpServer {
                         if (!((Neighbor) me.getValue()).isAlive()) {
                             continue;
                         }
-                        System.out.println("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "?" + "id=" + parameters.get("id").toString() + "&" + "url=" + parameters.get("url").toString());
-                        URL url = new URL("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "?" + "id=" + parameters.get("id").toString() + "&" + "url=" + parameters.get("url").toString());
+                        System.out.println("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "/download?" + "id=" + parameters.get("id").toString() + "&" + "url=" + parameters.get("url").toString());
+                        URL url = new URL("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "/download?" + "id=" + parameters.get("id").toString() + "&" + "url=" + parameters.get("url").toString());
                         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                         conn.setConnectTimeout(2);
                         conn.setRequestMethod("GET");
