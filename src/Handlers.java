@@ -111,9 +111,9 @@ public class Handlers extends SimpleHttpServer {
                         System.out.println("Constructed url: " + url);
                         HttpURLConnection conn = null;
                         try {
+                            conn = (HttpURLConnection) url.openConnection();
                             conn.setConnectTimeout(2000);
                             conn.setReadTimeout(2000);
-                            conn = (HttpURLConnection) url.openConnection();
                         } catch (IllegalStateException e) {
                             e.printStackTrace();
                         } catch (Exception e) {
