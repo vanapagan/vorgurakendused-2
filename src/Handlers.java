@@ -69,15 +69,26 @@ public class Handlers extends SimpleHttpServer {
                         if (!((Neighbor) me.getValue()).isAlive()) {
                             continue;
                         }
-                        System.out.println("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "/download?" + "id=" + parameters.get("id").toString() + "&" + "url=" + parameters.get("url").toString());
                         URL url = new URL("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "/download?" + "id=" + parameters.get("id").toString() + "&" + "url=" + parameters.get("url").toString());
                         System.out.println(url);
                         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                        conn.setConnectTimeout(2);
+                        System.out.println("Connection opened");
+
+                        System.out.println("Got response code " + conn.getResponseCode());
                         conn.setRequestMethod("GET");
                         BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        System.out.println("Connection opened");
                         System.out.println("Forwarded message to " + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort());
 
+                        String line;
+                        StringBuilder result = null;
+
+                        while ((line = rd.readLine()) != null) {
+                            result.append(line);
+                        }
+                        rd.close();
+
+                        System.out.println("Received a reply from " + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort());
 
                         System.out.println("Received a reply from " + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort());
 
