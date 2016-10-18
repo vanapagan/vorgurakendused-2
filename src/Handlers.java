@@ -72,19 +72,19 @@ public class Handlers extends SimpleHttpServer {
                         System.out.println(url);
                         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                         if (conn.getResponseCode() == 200) {
-                            System.out.println("Connection opened" + conn.getResponseCode());
+                            System.out.println("Connection opened " + conn.getResponseCode());
                             conn.setRequestMethod("GET");
-                            BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                            //BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                             System.out.println("Connection opened");
                             System.out.println("Forwarded message to " + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort());
 
                             String line;
                             StringBuilder result = null;
-
+                            /*
                             while ((line = rd.readLine()) != null) {
                                 result.append(line);
                             }
-                            rd.close();
+                            rd.close();*/
 
                             System.out.println("Received a reply from " + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort());
                         } else {
