@@ -129,7 +129,7 @@ public class Handlers extends SimpleHttpServer {
                     }
 
                     String responseBody = sb.toString();
-
+                    System.out.println(responseBody);
 
                 } else {
                     //TODO do not download, but send request to everyone else in the network
