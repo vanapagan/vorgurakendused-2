@@ -72,7 +72,7 @@ public class Handlers extends SimpleHttpServer {
                         URL url = new URL("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "/download?" + "id=" + parameters.get("id").toString() + "&" + "url=" + parameters.get("url").toString());
                         System.out.println(url);
                         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                        System.out.println("Connection opened");
+                        System.out.println("Connection opened" + conn.getResponseCode());
 
                         System.out.println("Got response code " + conn.getResponseCode());
                         conn.setRequestMethod("GET");
