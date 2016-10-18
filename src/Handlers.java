@@ -135,7 +135,12 @@ public class Handlers extends SimpleHttpServer {
                     String url2 = he.getRequestHeaders().getFirst("Host") + "/file";
                     System.out.println(url2);
                     URL obj = new URL(url2);
-                    HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+                    HttpsURLConnection con = null;
+                    try {
+                        con = (HttpsURLConnection) obj.openConnection();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
                     con.setRequestMethod("POST");
                     con.setRequestProperty("Accept-Language", "UTF-8");
