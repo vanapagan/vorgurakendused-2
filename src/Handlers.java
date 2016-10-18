@@ -137,6 +137,7 @@ public class Handlers extends SimpleHttpServer {
                                 System.out.println(response2.toString());
 
                             } else {
+                                System.out.println("No awser form: " + ((Neighbor) me.getValue()).getIp());
                                 continue;
                             }
                         }
