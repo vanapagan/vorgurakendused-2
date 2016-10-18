@@ -7,7 +7,10 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import java.io.*;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.*;
 
 public class Handlers extends SimpleHttpServer {
@@ -64,7 +67,6 @@ public class Handlers extends SimpleHttpServer {
         @Override
         public void handle(HttpExchange he) throws IOException {
 
-
             Map<String, Object> parameters = new HashMap<String, Object>();
             URI requestedUri = he.getRequestURI();
             String query = requestedUri.getRawQuery();
@@ -93,8 +95,40 @@ public class Handlers extends SimpleHttpServer {
                 getIn().put(parameters.get("id").toString(), request);
 
                 double d = new Random().nextDouble();
-                if (d <= 0.0001) {
-                    //TODO download file with and construct /file post message
+                if (d >= 0.0001) {
+                    //TODO download file and construct /file post message
+                    StringBuilder result = new StringBuilder();
+                    URL url = new URL(parameters.get("url").toString());
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("GET");
+                    BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    String line;
+                    int status = conn.getResponseCode();
+                    String mime = conn.getContentEncoding();
+
+                    while ((line = rd.readLine()) != null) {
+                        result.append(line);
+                    }
+                    rd.close();
+                    String content = result.toString();
+
+                    StringBuilder sb = new StringBuilder();
+                    if (conn.getResponseCode() != 200) {
+                        sb.append("{\"status\":");
+                        sb.append(conn.getResponseCode());
+                        sb.append("}");
+                    } else {
+                        sb.append("{\"status\":");
+                        sb.append(conn.getResponseCode());
+                        sb.append(", \"mime-type\":\"");
+                        sb.append(mime + "\", ");
+                        sb.append("\"content\":");
+                        sb.append("\"" + content + "\"");
+                        sb.append("}");
+                    }
+
+                    String responseBody = sb.toString();
+
 
                 } else {
                     //TODO do not download, but send request to everyone else in the network
