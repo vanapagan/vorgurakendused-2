@@ -89,7 +89,12 @@ public class Handlers extends SimpleHttpServer {
 
 
             if (parameters.get("id") != null && parameters.get("url") != null) {
-                Request request = new Request(parameters.get("id").toString(), parameters.get("url").toString());
+                String hostname = "";
+                if (he.getRequestHeaders() != null) {
+                    hostname = he.getRequestHeaders().getFirst("Host");
+                }
+                System.out.println("Request id: " + parameters.get("id").toString() + " from host: " + hostname);
+                Request request = new Request(parameters.get("id").toString(), hostname);
                 getIn().put(parameters.get("id").toString(), request);
 
                 double d = new Random().nextDouble();
