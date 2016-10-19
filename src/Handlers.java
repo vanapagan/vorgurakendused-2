@@ -93,7 +93,7 @@ public class Handlers extends SimpleHttpServer {
                 getIn().put(parameters.get("id").toString(), request);
 
                 double d = new Random().nextDouble();
-                if (d < 0.000001) {
+                if (d < 0.99999) {
                     //TODO download file and construct /file post message
                     System.out.println("I will download");
                     StringBuilder result = new StringBuilder();
