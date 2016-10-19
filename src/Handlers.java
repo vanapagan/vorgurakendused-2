@@ -93,7 +93,7 @@ public class Handlers extends SimpleHttpServer {
                 getIn().put(parameters.get("id").toString(), request);
 
                 double d = new Random().nextDouble();
-                if (d < 0.00001) {
+                if (d < 0.20) {
                     //TODO download file and construct /file post message
                     System.out.println("I will download");
                     StringBuilder result = new StringBuilder();
@@ -108,7 +108,6 @@ public class Handlers extends SimpleHttpServer {
                     while ((line = rd.readLine()) != null) {
                         result.append(line);
                     }
-
                     rd.close();
                     String content = result.toString();
                     StringBuilder sb = new StringBuilder();
@@ -131,9 +130,9 @@ public class Handlers extends SimpleHttpServer {
                     System.out.println("ResponseBody constructed");
 
                     StringBuilder tokenUri = new StringBuilder("id=");
-                    tokenUri.append(URLEncoder.encode(body, "UTF-8"));
+                    tokenUri.append(URLEncoder.encode(body,"UTF-8"));
 
-                    String url2 = "http://" + he.getRequestHeaders().getFirst("Host") + "/file?id=" + parameters.get("id").toString();
+                    String url2 = "https://" + he.getRequestHeaders().getFirst("Host") + "/file?";
                     System.out.println(url2);
                     URL obj = new URL(url2);
                     HttpsURLConnection con = null;
@@ -145,8 +144,6 @@ public class Handlers extends SimpleHttpServer {
 
                     con.setRequestMethod("POST");
                     con.setRequestProperty("Accept-Language", "UTF-8");
-
-                    StringBuilder paramBuilder = new StringBuilder();
 
                     con.setDoOutput(true);
                     OutputStreamWriter outputStreamWriter = new OutputStreamWriter(con.getOutputStream());
