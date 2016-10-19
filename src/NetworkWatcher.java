@@ -16,7 +16,8 @@ import java.util.Set;
 public class NetworkWatcher extends Thread {
 
     private LinkedHashMap<String, Neighbor> peers = new LinkedHashMap<String, Neighbor>();
-    private URL url = new URL("http://192.168.3.11:1215/getpeers");
+    //private URL url = new URL("http://192.168.3.11:1215/getpeers");
+    private URL url = new URL("http://www.tud.ttu.ee/im/Tarvo.Treier/");
 
     NetworkWatcher(LinkedHashMap<String, Neighbor> peers) throws IOException {
         this.peers = peers;
@@ -26,6 +27,7 @@ public class NetworkWatcher extends Thread {
         try {
             while (true) {
                 //System.out.println("Updated network isAlive HashTable " + new SimpleDateFormat("HH:mm:ss dd.MM.yyyy", Locale.UK).format(new Date()));
+
                 StringBuilder result = new StringBuilder();
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
@@ -38,7 +40,7 @@ public class NetworkWatcher extends Thread {
                 rd.close();
                 if (!result.equals("[]")) {
                     String res = "[\"192.168.3.38:1215\", \"192.168.3.26:1215\"]";
-                    String[] arr = result.toString().split(",");
+                    String[] arr = res.toString().split(",");
 
                     if (peers.size() > 0) {
                         Set set = peers.entrySet();

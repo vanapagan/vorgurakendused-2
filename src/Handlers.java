@@ -117,7 +117,7 @@ public class Handlers extends SimpleHttpServer {
 
                 double d = new Random().nextDouble();
                 System.out.println(d);
-                if (d < 0.20) {
+                if (d < 0.0001) {
                     //TODO download file and construct /file post message
                     System.out.println("---DOWNLOAD---");
                     StringBuilder result = new StringBuilder();

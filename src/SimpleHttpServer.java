@@ -7,6 +7,7 @@ import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.LinkedHashMap;
+import java.util.Scanner;
 
 public class SimpleHttpServer {
     private int port;
@@ -32,6 +33,8 @@ public class SimpleHttpServer {
             NetworkWatcher nw = new NetworkWatcher(peers);
             nw.start();
 
+            InputParser parser = new InputParser(new Scanner(System.in), this);
+            parser.start();
 
         } catch (IOException e) {
             e.printStackTrace();
