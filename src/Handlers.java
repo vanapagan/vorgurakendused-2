@@ -96,7 +96,7 @@ public class Handlers extends SimpleHttpServer {
                 System.out.println(d);
                 if (d < 0.20) {
                     //TODO download file and construct /file post message
-                    System.out.println("I will download");
+                    System.out.println("---DOWNLOAD---");
                     StringBuilder result = new StringBuilder();
                     URL url = new URL(parameters.get("url").toString());
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -169,6 +169,7 @@ public class Handlers extends SimpleHttpServer {
 
                 } else {
                     //TODO do not download, but send request to everyone else in the network
+                    System.out.println("---FORWARD---");
                     Set set = getPeers().entrySet();
 
                     Iterator iterator = set.iterator();

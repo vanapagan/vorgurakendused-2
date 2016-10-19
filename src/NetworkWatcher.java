@@ -5,8 +5,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Kristo on 17.10.2016.
@@ -23,7 +25,7 @@ public class NetworkWatcher extends Thread {
     public synchronized void run() {
         try {
             while (true) {
-                System.out.println("Updated network isAlive HashTable " + new SimpleDateFormat("HH:mm:ss dd.MM.yyyy", Locale.UK).format(new Date()));
+                //System.out.println("Updated network isAlive HashTable " + new SimpleDateFormat("HH:mm:ss dd.MM.yyyy", Locale.UK).format(new Date()));
                 StringBuilder result = new StringBuilder();
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
