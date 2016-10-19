@@ -223,11 +223,12 @@ public class Handlers extends SimpleHttpServer {
 
                 }
 
+                /*
                 if (he.getRequestMethod().equals("GET")) {
                     new GetHandler().handle(he);
                 } else {
                     new PostHandler().handle(he);
-                }
+                }*/
 
             }
 
