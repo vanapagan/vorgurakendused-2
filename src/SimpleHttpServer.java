@@ -22,6 +22,7 @@ public class SimpleHttpServer {
             System.out.println("server started at " + port);
             server.createContext("/", new Handlers.RootHandler());
             server.createContext("/download", new Handlers.DownloadHandler());
+            server.createContext("/file", new Handlers.DownloadHandler());
             server.createContext("/header", new Handlers.HeaderHandler());
             server.createContext("/get", new Handlers.GetHandler());
             server.createContext("/post", new Handlers.PostHandler());
