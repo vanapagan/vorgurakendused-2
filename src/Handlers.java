@@ -108,6 +108,7 @@ public class Handlers extends SimpleHttpServer {
                     while ((line = rd.readLine()) != null) {
                         result.append(line);
                     }
+
                     rd.close();
                     String content = result.toString();
                     StringBuilder sb = new StringBuilder();
