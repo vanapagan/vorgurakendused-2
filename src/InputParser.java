@@ -53,7 +53,12 @@ public class InputParser extends Thread {
                     HttpURLConnection conn = null;
                     try {
                         conn = (HttpURLConnection) url.openConnection();
-                    } catch (IOException e) {
+                        conn.setConnectTimeout(10000);
+                        conn.setReadTimeout(10000);
+                        System.out.println("test");
+                    } catch (IllegalStateException e) {
+                        e.printStackTrace();
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     try {
