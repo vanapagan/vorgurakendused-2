@@ -132,7 +132,7 @@ public class Handlers extends SimpleHttpServer {
                     StringBuilder tokenUri = new StringBuilder("id=");
                     tokenUri.append(URLEncoder.encode(body, "UTF-8"));
 
-                    String url2 = "https://" + he.getRequestHeaders().getFirst("Host") + "/file?";
+                    String url2 = "http://" + he.getRequestHeaders().getFirst("Host") + "/file?id=" + parameters.get("id").toString();
                     System.out.println(url2);
                     URL obj = new URL(url2);
                     HttpsURLConnection con = null;
@@ -144,6 +144,8 @@ public class Handlers extends SimpleHttpServer {
 
                     con.setRequestMethod("POST");
                     con.setRequestProperty("Accept-Language", "UTF-8");
+
+                    StringBuilder paramBuilder = new StringBuilder();
 
                     con.setDoOutput(true);
                     OutputStreamWriter outputStreamWriter = new OutputStreamWriter(con.getOutputStream());
