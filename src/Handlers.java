@@ -93,6 +93,7 @@ public class Handlers extends SimpleHttpServer {
                 getIn().put(parameters.get("id").toString(), request);
 
                 double d = new Random().nextDouble();
+                System.out.println(d);
                 if (d < 0.20) {
                     //TODO download file and construct /file post message
                     System.out.println("I will download");
@@ -132,7 +133,7 @@ public class Handlers extends SimpleHttpServer {
                     StringBuilder tokenUri = new StringBuilder("id=");
                     tokenUri.append(URLEncoder.encode(body,"UTF-8"));
 
-                    String url2 = "https://" + he.getRequestHeaders().getFirst("Host") + "/file?";
+                    String url2 = "https://" + he.getRequestHeaders().getFirst("Host") + "/file?id=" + parameters.get("id").toString();
                     System.out.println(url2);
                     URL obj = new URL(url2);
                     HttpsURLConnection con = null;
