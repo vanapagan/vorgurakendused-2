@@ -24,9 +24,10 @@ public class SimpleHttpServer {
             server.createContext("/", new Handlers.RootHandler());
 
             DownloadRequestHandler downloadHandler = new DownloadRequestHandler();
+            FileResponseHandler fileHandler = new FileResponseHandler();
 
             server.createContext("/download", downloadHandler);
-            server.createContext("/file", new Handlers.DownloadHandler());
+            server.createContext("/file", fileHandler);
             server.createContext("/header", new Handlers.HeaderHandler());
             server.createContext("/get", new Handlers.GetHandler());
             server.createContext("/post", new Handlers.PostHandler());
