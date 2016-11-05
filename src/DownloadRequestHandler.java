@@ -36,10 +36,14 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
         os.write(response.getBytes());
         os.close();
 
+        String idParam = parameters.get("id").toString();
+        String urlParam = parameters.get("url").toString();
 
-        if (parameters.get("id") != null && parameters.get("url") != null) {
-            Request request = new Request(parameters.get("id").toString(), parameters.get("url").toString());
-            getIn().put(parameters.get("id").toString(), request);
+        if (idParam != null && urlParam != null) {
+
+            if (routingTableContainsRequest(idParam, urlParam)) {
+                return;
+            }
 
             double d = new Random().nextDouble();
             System.out.println(d);
@@ -47,7 +51,7 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
                 //TODO download file and construct /file post message
                 System.out.println("---DOWNLOAD---");
                 StringBuilder result = new StringBuilder();
-                URL url = new URL(parameters.get("url").toString());
+                URL url = new URL(urlParam);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -82,7 +86,7 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
                 StringBuilder tokenUri = new StringBuilder("id=");
                 tokenUri.append(URLEncoder.encode(body,"UTF-8"));
 
-                String url2 = "https://" + he.getRequestHeaders().getFirst("Host") + "/file?id=" + parameters.get("id").toString();
+                String url2 = "https://" + he.getRequestHeaders().getFirst("Host") + "/file?id=" + idParam;
                 System.out.println(url2);
                 URL obj = new URL(url2);
                 HttpsURLConnection con = null;
@@ -124,56 +128,14 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
                 Iterator iterator = set.iterator();
                 while (iterator.hasNext()) {
                     Map.Entry me = (Map.Entry) iterator.next();
-                    if (((Neighbor) me.getValue()).getIp().equals("192.168.3.39") && iterator.hasNext()) {
-                        me = (Map.Entry) iterator.next();
-                    }
                     if (!((Neighbor) me.getValue()).isAlive()) {
                         continue;
                     }
-
-                    URL url = new URL("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "/download?" + "id=" + parameters.get("id").toString() + "&" + "url=" + parameters.get("url").toString());
+                    URL url = new URL("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "/download?" + "id=" + idParam + "&" + "url=" + urlParam);
                     System.out.println("Constructed url: " + url);
-                    HttpURLConnection conn = null;
 
                     new DownloadThread(super.getRoutingTable(), url).start();
 
-                    /*
-                    try {
-                        conn = (HttpURLConnection) url.openConnection();
-                        conn.setConnectTimeout(5000);
-                        conn.setReadTimeout(5000);
-                    } catch (SocketTimeoutException e) {
-                        e.printStackTrace();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    if (conn.getResponseCode() == 200) {
-                        System.out.println("Connection opened " + conn.getResponseCode());
-
-                        System.out.println("Sending request to URL : " + url);
-                        System.out.println("Response Code : " + conn.getResponseCode());
-                        System.out.println("Response Message : " + conn.getResponseMessage());
-
-                        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                        System.out.println("Connection opened");
-                        System.out.println("Forwarded message to " + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort());
-
-                        BufferedReader in = new BufferedReader(
-                                new InputStreamReader(conn.getInputStream()));
-                        String line;
-                        StringBuffer response2 = new StringBuffer();
-
-                        while ((line = in.readLine()) != null) {
-                            response2.append(line);
-                        }
-                        in.close();
-
-                        System.out.println(response2.toString());
-
-                    } else {
-                        System.out.println("No answer form: " + ((Neighbor) me.getValue()).getIp());
-                        continue;
-                    }*/
                 }
             }
 

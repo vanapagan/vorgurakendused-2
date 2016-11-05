@@ -10,10 +10,9 @@ public class DownloadRequest {
     private String fileIp;
     private Date stamp;
 
-    public DownloadRequest(String id, String downloadIp, String fileIp) {
+    public DownloadRequest(String id, String downloadIp) {
         this.id = id;
         this.downloadIp = downloadIp;
-        this.fileIp = fileIp;
         this.stamp = new Date(System.currentTimeMillis());
     }
 
@@ -31,5 +30,9 @@ public class DownloadRequest {
 
     public Date getStamp() {
         return stamp;
+    }
+
+    public void setFileIp(String fileIp) {
+        this.fileIp = fileIp;
     }
 }

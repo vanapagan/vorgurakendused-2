@@ -21,7 +21,7 @@ public class DownloadThread extends Thread {
         this.url = url;
     }
 
-    public void run() {
+    public synchronized void run() {
         try {
             conn = (HttpURLConnection) url.openConnection();
             conn.setConnectTimeout(5000);

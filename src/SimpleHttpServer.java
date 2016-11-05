@@ -12,10 +12,12 @@ import java.util.Scanner;
 public class SimpleHttpServer {
     private int port;
     private HttpServer server;
-    private static LinkedHashMap<String, Request> out = new LinkedHashMap<String, Request>();
-    private static LinkedHashMap<String, Request> in = new LinkedHashMap<String, Request>();
+
+    private static LinkedHashMap<String, MyRequest> in = new LinkedHashMap<String, MyRequest>();
     private static LinkedHashMap<String, Neighbor> peers = new LinkedHashMap<String, Neighbor>();
     private LinkedHashMap<String, DownloadRequest> routingTable = new LinkedHashMap<String, DownloadRequest>();
+    private LinkedHashMap<String, MyRequest> myRequests = new LinkedHashMap<String, MyRequest>();
+
     private double laziness = 0.001;
 
     public void Start(int port) {
@@ -36,6 +38,7 @@ public class SimpleHttpServer {
             server.setExecutor(null);
             server.start();
 
+
             NetworkWatcher nw = new NetworkWatcher(peers);
             nw.start();
 
@@ -50,14 +53,6 @@ public class SimpleHttpServer {
     public void Stop() {
         server.stop(0);
         System.out.println("server stopped");
-    }
-
-    public static LinkedHashMap<String, Request> getOut() {
-        return out;
-    }
-
-    public static LinkedHashMap<String, Request> getIn() {
-        return in;
     }
 
     public static LinkedHashMap<String, Neighbor> getPeers() {
@@ -76,7 +71,24 @@ public class SimpleHttpServer {
         return routingTable;
     }
 
+    public boolean routingTableContainsRequest(String id, String url) {
+        if (getRoutingTable().containsKey(id)) {
+            System.out.println("/download request with an id: " + id + " has already been served and will be ignored");
+            return true;
+        } else {
+            addRequestToRoutingTable(id, url);
+            return false;
+        }
+    }
 
+    private void addRequestToRoutingTable(String id, String url) {
+        DownloadRequest dlr = new DownloadRequest(id, url);
+        getRoutingTable().put(id, dlr);
+        System.out.println("/download request with an id: " + id + " has been added to the  routing table");
+    }
 
+    public LinkedHashMap<String, MyRequest> getMyRequests() {
+        return myRequests;
+    }
 }
 
