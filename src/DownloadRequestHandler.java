@@ -57,13 +57,24 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
                 BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 String line;
                 int status = conn.getResponseCode();
-                String mime = conn.getContentType();
+                String[] contentTypeArray = conn.getContentType().split(";");
+                String mime;
 
+                if (contentTypeArray[0] != null) {
+                    mime = contentTypeArray[0];
+                } else {
+                    mime = "unknown";
+                }
+                System.out.println(mime);
                 while ((line = rd.readLine()) != null) {
                     result.append(line);
                 }
                 rd.close();
-                String content = result.toString();
+
+                //String content = result.toString();
+                byte[] byteArr = result.toString().getBytes("UTF-8");
+                String encodedContent = Base64.getEncoder().encodeToString(byteArr);
+
                 StringBuilder sb = new StringBuilder();
                 if (conn.getResponseCode() != 200) {
                     System.out.println("Http error " + conn.getResponseCode());
@@ -76,7 +87,7 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
                     sb.append(", \"mime-type\":\"");
                     sb.append(mime + "\", ");
                     sb.append("\"content\":");
-                    sb.append("\"" + content + "\"");
+                    sb.append("\"" + encodedContent + "\"");
                     sb.append("}");
                 }
 
@@ -86,7 +97,7 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
                 StringBuilder tokenUri = new StringBuilder("id=");
                 tokenUri.append(URLEncoder.encode(body,"UTF-8"));
 
-                String url2 = "https://" + he.getRequestHeaders().getFirst("Host") + "/file?id=" + idParam;
+                String url2 = "http://" + he.getRequestHeaders().getFirst("Host") + "/file?id=" + idParam;
                 URL obj = new URL(url2);
                 FileThread ft = new FileThread(obj, tokenUri, body);
                 ft.start();

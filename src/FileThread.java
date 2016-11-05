@@ -1,9 +1,5 @@
-import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
-import java.net.ProtocolException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.net.*;
 
 /**
  * Created by Kristo on 5.11.2016.
@@ -27,10 +23,11 @@ public class FileThread extends Thread {
             tokenUri.append(URLEncoder.encode(body,"UTF-8"));
 
             URL obj = url;
-            HttpsURLConnection con = null;
+            System.out.println(obj);
+            HttpURLConnection con = null;
 
             try {
-                con = (HttpsURLConnection) obj.openConnection();
+                con = (HttpURLConnection) obj.openConnection();
                 con.setConnectTimeout(5000);
                 con.setReadTimeout(5000);
             } catch (SocketTimeoutException e) {
