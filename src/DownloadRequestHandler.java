@@ -1,7 +1,6 @@
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -47,6 +46,7 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
 
             double d = new Random().nextDouble();
             System.out.println(d);
+
             if (d < getLaziness()) {
                 //TODO download file and construct /file post message
                 System.out.println("---DOWNLOAD---");
@@ -87,38 +87,9 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
                 tokenUri.append(URLEncoder.encode(body,"UTF-8"));
 
                 String url2 = "https://" + he.getRequestHeaders().getFirst("Host") + "/file?id=" + idParam;
-                System.out.println(url2);
                 URL obj = new URL(url2);
-                HttpsURLConnection con = null;
-                try {
-                    con = (HttpsURLConnection) obj.openConnection();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                con.setRequestMethod("POST");
-                con.setRequestProperty("Accept-Language", "UTF-8");
-
-                con.setDoOutput(true);
-                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(con.getOutputStream());
-                outputStreamWriter.write(tokenUri.toString());
-                outputStreamWriter.flush();
-
-                int responseCode = con.getResponseCode();
-                System.out.println("\nSending 'POST' request to URL : " + url2);
-                System.out.println("Post parameters : " + sb.toString());
-                System.out.println("Response Code : " + responseCode);
-
-                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                String inputLine;
-                StringBuffer response2 = new StringBuffer();
-
-                while ((inputLine = in.readLine()) != null) {
-                    response2.append(inputLine);
-                }
-                in.close();
-
-                System.out.println(response2.toString());
+                FileThread ft = new FileThread(obj, tokenUri, body);
+                ft.start();
 
             } else {
                 //TODO do not download, but send request to everyone else in the network
@@ -135,20 +106,9 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
                     System.out.println("Constructed url: " + url);
 
                     new DownloadThread(super.getRoutingTable(), url).start();
-
                 }
             }
-
-                /*
-                if (he.getRequestMethod().equals("GET")) {
-                    new GetHandler().handle(he);
-                } else {
-                    new PostHandler().handle(he);
-                }*/
-
         }
-
-
     }
 
     public void parseQuery(String query, Map<String, Object> parameters) throws UnsupportedEncodingException {

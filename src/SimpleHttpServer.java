@@ -18,7 +18,7 @@ public class SimpleHttpServer {
     private LinkedHashMap<String, DownloadRequest> routingTable = new LinkedHashMap<String, DownloadRequest>();
     private LinkedHashMap<String, MyRequest> myRequests = new LinkedHashMap<String, MyRequest>();
 
-    private double laziness = 0.001;
+    private double laziness = 0.9999;
 
     public void Start(int port) {
         try {
@@ -28,7 +28,7 @@ public class SimpleHttpServer {
             server.createContext("/", new Handlers.RootHandler());
 
             DownloadRequestHandler downloadHandler = new DownloadRequestHandler();
-            FileResponseHandler fileHandler = new FileResponseHandler();
+            FileRequestHandler fileHandler = new FileRequestHandler();
 
             server.createContext("/download", downloadHandler);
             server.createContext("/file", fileHandler);

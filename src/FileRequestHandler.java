@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Created by Kristo on 31.10.2016.
  */
-public class FileResponseHandler extends SimpleHttpServer implements HttpHandler{
+public class FileRequestHandler extends SimpleHttpServer implements HttpHandler{
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {

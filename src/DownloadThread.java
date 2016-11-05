@@ -11,7 +11,6 @@ import java.util.LinkedHashMap;
  */
 public class DownloadThread extends Thread {
 
-    private SimpleHttpServer server;
     private URL url;
     private HttpURLConnection conn = null;
     private LinkedHashMap<String, DownloadRequest> routingTable;
