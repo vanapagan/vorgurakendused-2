@@ -43,7 +43,7 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
 
             double d = new Random().nextDouble();
             System.out.println(d);
-            if (d < 0.0001) {
+            if (d < getLaziness()) {
                 //TODO download file and construct /file post message
                 System.out.println("---DOWNLOAD---");
                 StringBuilder result = new StringBuilder();
@@ -134,11 +134,15 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
                     URL url = new URL("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "/download?" + "id=" + parameters.get("id").toString() + "&" + "url=" + parameters.get("url").toString());
                     System.out.println("Constructed url: " + url);
                     HttpURLConnection conn = null;
+
+                    new DownloadThread(super.getRoutingTable(), url).start();
+
+                    /*
                     try {
                         conn = (HttpURLConnection) url.openConnection();
                         conn.setConnectTimeout(5000);
                         conn.setReadTimeout(5000);
-                    } catch (IllegalStateException e) {
+                    } catch (SocketTimeoutException e) {
                         e.printStackTrace();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -169,9 +173,8 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
                     } else {
                         System.out.println("No answer form: " + ((Neighbor) me.getValue()).getIp());
                         continue;
-                    }
+                    }*/
                 }
-
             }
 
                 /*
@@ -221,5 +224,7 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
             }
         }
     }
+
+
 
 }

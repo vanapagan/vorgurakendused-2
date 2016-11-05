@@ -15,6 +15,8 @@ public class SimpleHttpServer {
     private static LinkedHashMap<String, Request> out = new LinkedHashMap<String, Request>();
     private static LinkedHashMap<String, Request> in = new LinkedHashMap<String, Request>();
     private static LinkedHashMap<String, Neighbor> peers = new LinkedHashMap<String, Neighbor>();
+    private LinkedHashMap<String, DownloadRequest> routingTable = new LinkedHashMap<String, DownloadRequest>();
+    private double laziness = 0.001;
 
     public void Start(int port) {
         try {
@@ -61,5 +63,20 @@ public class SimpleHttpServer {
     public static LinkedHashMap<String, Neighbor> getPeers() {
         return peers;
     }
+
+    public double getLaziness() {
+        return laziness;
+    }
+
+    public void setLaziness(double laziness) {
+        this.laziness = laziness;
+    }
+
+    public LinkedHashMap<String, DownloadRequest> getRoutingTable() {
+        return routingTable;
+    }
+
+
+
 }
 

@@ -33,7 +33,9 @@ public class InputParser extends Thread {
             String input = scanner.nextLine();
             System.out.println("You entered: " + input);
 
-            if (input.equals("download")) {
+            String[] splitted = input.split(" ");
+
+            if (splitted[0].equals("download")) {
                 System.out.println("---FORWARD---");
                 Set set = server.getPeers().entrySet();
                 Iterator iterator = set.iterator();
@@ -92,6 +94,9 @@ public class InputParser extends Thread {
                         e.printStackTrace();
                     }
                 }
+            } else if (splitted[0].equals("laziness") && splitted[1] != null) {
+                server.setLaziness(Double.parseDouble(splitted[1]));
+                System.out.println("Laziness set to " + server.getLaziness());
             }
 
         }
