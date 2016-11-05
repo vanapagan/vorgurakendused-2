@@ -7,23 +7,20 @@ import java.net.*;
 public class FileThread extends Thread {
 
     URL url;
-    StringBuilder tokenUri;
     String body;
 
 
-    public FileThread(URL url, StringBuilder tokenUri, String body) {
+    public FileThread(URL url, String body) {
         this.url = url;
-        this.tokenUri = tokenUri;
         this.body = body;
     }
 
     public void run() {
         try {
-            StringBuilder tokenUri = new StringBuilder("id=");
-            tokenUri.append(URLEncoder.encode(body,"UTF-8"));
+            StringBuilder encodedBody = new StringBuilder();
+            encodedBody.append(URLEncoder.encode(body, "UTF-8"));
 
             URL obj = url;
-            System.out.println(obj);
             HttpURLConnection con = null;
 
             try {
@@ -41,7 +38,7 @@ public class FileThread extends Thread {
 
             con.setDoOutput(true);
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(con.getOutputStream());
-            outputStreamWriter.write(tokenUri.toString());
+            outputStreamWriter.write(encodedBody.toString());
             outputStreamWriter.flush();
 
             int responseCode = con.getResponseCode();
@@ -51,14 +48,14 @@ public class FileThread extends Thread {
 
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
-            StringBuffer response2 = new StringBuffer();
+            StringBuffer response = new StringBuffer();
 
             while ((inputLine = in.readLine()) != null) {
-                response2.append(inputLine);
+                response.append(inputLine);
             }
             in.close();
 
-            System.out.println(response2.toString());
+            System.out.println(response.toString());
 
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

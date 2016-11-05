@@ -15,7 +15,7 @@ public class SimpleHttpServer {
 
     private static LinkedHashMap<String, MyRequest> in = new LinkedHashMap<String, MyRequest>();
     private static LinkedHashMap<String, Neighbor> peers = new LinkedHashMap<String, Neighbor>();
-    private LinkedHashMap<String, DownloadRequest> routingTable = new LinkedHashMap<String, DownloadRequest>();
+    private LinkedHashMap<String, Request> routingTable = new LinkedHashMap<String, Request>();
     private LinkedHashMap<String, MyRequest> myRequests = new LinkedHashMap<String, MyRequest>();
 
     private double laziness = 0.9999;
@@ -67,24 +67,30 @@ public class SimpleHttpServer {
         this.laziness = laziness;
     }
 
-    public LinkedHashMap<String, DownloadRequest> getRoutingTable() {
+    public LinkedHashMap<String, Request> getRoutingTable() {
         return routingTable;
     }
 
-    public boolean routingTableContainsRequest(String id, String url) {
+    public boolean routingTableContainsRequest(String id) {
         if (getRoutingTable().containsKey(id)) {
-            System.out.println("/download request with an id: " + id + " has already been served and will be ignored");
+            System.out.println("/download request with an id: " + id + " has already been served");
             return true;
         } else {
-            addRequestToRoutingTable(id, url);
+            System.out.println("/download request with an id: " + id + " has not yet been served");
             return false;
         }
     }
 
-    private void addRequestToRoutingTable(String id, String url) {
-        DownloadRequest dlr = new DownloadRequest(id, url);
+    public void addDownloadRequestToRoutingTable(String id, String url) {
+        Request dlr = new Request(id, url, null);
         getRoutingTable().put(id, dlr);
         System.out.println("/download request with an id: " + id + " has been added to the  routing table");
+    }
+
+    public void addFileRequestToRoutingTable(String id, String url) {
+        Request dlr = new Request(id, null, url);
+        getRoutingTable().put(id, dlr);
+        System.out.println("/file request with an id: " + id + " has been added to the  routing table");
     }
 
     public LinkedHashMap<String, MyRequest> getMyRequests() {

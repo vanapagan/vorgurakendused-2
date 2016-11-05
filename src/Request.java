@@ -3,16 +3,17 @@ import java.util.Date;
 /**
  * Created by Kristo on 5.11.2016.
  */
-public class DownloadRequest {
+public class Request {
 
     private String id;
     private String downloadIp;
     private String fileIp;
     private Date stamp;
 
-    public DownloadRequest(String id, String downloadIp) {
+    public Request(String id, String downloadIp, String fileIp) {
         this.id = id;
         this.downloadIp = downloadIp;
+        this.fileIp = fileIp;
         this.stamp = new Date(System.currentTimeMillis());
     }
 

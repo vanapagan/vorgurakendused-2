@@ -2,6 +2,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import java.io.*;
+import java.net.URI;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,22 +15,64 @@ import java.util.Map;
 public class FileRequestHandler extends SimpleHttpServer implements HttpHandler{
 
     @Override
-    public void handle(HttpExchange httpExchange) throws IOException {
-        System.out.println("Received a file response");
+    public void handle(HttpExchange he) throws IOException {
+        System.out.println("Received a /file request");
 
-        Map<String, Object> parameters = new HashMap<>();
-        InputStreamReader isr = new InputStreamReader(httpExchange.getRequestBody(), "utf-8");
-        BufferedReader br = new BufferedReader(isr);
-        String query = br.readLine();
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        URI requestedUri = he.getRequestURI();
+        String query = requestedUri.getRawQuery();
         parseQuery(query, parameters);
         // send response
-        String response = "";
-        for (String key : parameters.keySet())
-            response += key + " = " + parameters.get(key) + "\n";
-        httpExchange.sendResponseHeaders(200, response.length());
-        OutputStream os = httpExchange.getResponseBody();
-        os.write(response.toString().getBytes());
+
+        String response;
+
+        if (parameters.get("id") != null) {
+            response = "OK";
+            he.sendResponseHeaders(200, response.length());
+        } else {
+            response = "ERROR - missing parameter 'id'";
+            he.sendResponseHeaders(422, response.length());
+        }
+
+        OutputStream os = he.getResponseBody();
+        os.write(response.getBytes());
         os.close();
+
+        String idParam = parameters.get("id").toString();
+        String from = he.getRequestHeaders().getFirst("Host");
+
+        if (idParam != null) {
+
+            if (!routingTableContainsRequest(idParam)) {
+                addFileRequestToRoutingTable(idParam, from);
+                return;
+            }
+
+            if (getMyRequests().containsKey(idParam)) {
+                System.out.println("Received a response for my request with an id:'" + idParam + "' from: '" + from + "'");
+                InputStreamReader isr = new InputStreamReader(he.getRequestBody(), "utf-8");
+                BufferedReader br = new BufferedReader(isr);
+
+
+
+            }
+
+        }
+
+        Map<String, Object> parameters2 = new HashMap<>();
+        InputStreamReader isr = new InputStreamReader(he.getRequestBody(), "utf-8");
+        BufferedReader br = new BufferedReader(isr);
+        String query2 = br.readLine();
+        parseQuery(query2, parameters2);
+        // send response
+        String response2 = "";
+        for (String key : parameters2.keySet()) {
+            response += key + " = " + parameters2.get(key) + "\n";
+        }
+        he.sendResponseHeaders(200, response2.length());
+        OutputStream os2 = he.getResponseBody();
+        os2.write(response2.toString().getBytes());
+        os2.close();
 
     }
 

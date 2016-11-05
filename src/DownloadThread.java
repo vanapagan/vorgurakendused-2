@@ -13,9 +13,9 @@ public class DownloadThread extends Thread {
 
     private URL url;
     private HttpURLConnection conn = null;
-    private LinkedHashMap<String, DownloadRequest> routingTable;
+    private LinkedHashMap<String, Request> routingTable;
 
-    public DownloadThread(LinkedHashMap<String, DownloadRequest> routingTable, URL url) {
+    public DownloadThread(LinkedHashMap<String, Request> routingTable, URL url) {
         this.routingTable = routingTable;
         this.url = url;
     }

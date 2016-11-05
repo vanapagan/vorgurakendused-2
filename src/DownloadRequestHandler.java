@@ -13,6 +13,8 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
     @Override
     public void handle(HttpExchange he) throws IOException {
 
+        System.out.println("Received a /download request");
+
         Map<String, Object> parameters = new HashMap<String, Object>();
         URI requestedUri = he.getRequestURI();
         String query = requestedUri.getRawQuery();
@@ -29,8 +31,6 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
             he.sendResponseHeaders(422, response.length());
         }
 
-        System.out.println("Received a /download request");
-
         OutputStream os = he.getResponseBody();
         os.write(response.getBytes());
         os.close();
@@ -40,8 +40,10 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
 
         if (idParam != null && urlParam != null) {
 
-            if (routingTableContainsRequest(idParam, urlParam)) {
+            if (routingTableContainsRequest(idParam)) {
                 return;
+            } else {
+                addDownloadRequestToRoutingTable(idParam, urlParam);
             }
 
             double d = new Random().nextDouble();
@@ -65,13 +67,12 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
                 } else {
                     mime = "unknown";
                 }
-                System.out.println(mime);
+
                 while ((line = rd.readLine()) != null) {
                     result.append(line);
                 }
                 rd.close();
 
-                //String content = result.toString();
                 byte[] byteArr = result.toString().getBytes("UTF-8");
                 String encodedContent = Base64.getEncoder().encodeToString(byteArr);
 
@@ -94,12 +95,9 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
                 String body = sb.toString();
                 System.out.println("ResponseBody constructed");
 
-                StringBuilder tokenUri = new StringBuilder("id=");
-                tokenUri.append(URLEncoder.encode(body,"UTF-8"));
-
                 String url2 = "http://" + he.getRequestHeaders().getFirst("Host") + "/file?id=" + idParam;
-                URL obj = new URL(url2);
-                FileThread ft = new FileThread(obj, tokenUri, body);
+                URL urlObj = new URL(url2);
+                FileThread ft = new FileThread(urlObj, body);
                 ft.start();
 
             } else {
