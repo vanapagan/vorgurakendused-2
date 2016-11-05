@@ -4,7 +4,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.util.LinkedHashMap;
 
 /**
  * Created by Kristo on 5.11.2016.
@@ -13,14 +12,12 @@ public class DownloadThread extends Thread {
 
     private URL url;
     private HttpURLConnection conn = null;
-    private LinkedHashMap<String, Request> routingTable;
 
-    public DownloadThread(LinkedHashMap<String, Request> routingTable, URL url) {
-        this.routingTable = routingTable;
+    public DownloadThread(URL url) {
         this.url = url;
     }
 
-    public synchronized void run() {
+    public void run() {
         try {
             conn = (HttpURLConnection) url.openConnection();
             conn.setConnectTimeout(5000);

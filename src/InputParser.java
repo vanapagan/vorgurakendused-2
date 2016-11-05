@@ -38,8 +38,15 @@ public class InputParser extends Thread {
                 String address = "http://google.com";
                 //String address = splitted[1];
 
-                MyRequest myr = new MyRequest(idParam, address);
-                server.getMyRequests().put(idParam, myr);
+                //MyRequest myr = new MyRequest(idParam, address);
+                //server.getMyRequests().put(idParam, myr);
+
+                if (server.routingTableContainsRequest(idParam)) {
+                    continue;
+                } else {
+                    server.addDownloadRequestToRoutingTable(idParam, "http://localhost:1215");
+                }
+
                 Set set = server.getPeers().entrySet();
                 Iterator iterator = set.iterator();
                 while (iterator.hasNext()) {
@@ -57,7 +64,7 @@ public class InputParser extends Thread {
                         e.printStackTrace();
                     }
                     System.out.println("Constructed url: " + url);
-                    new DownloadThread(server.getRoutingTable(), url).start();
+                    new DownloadThread(url).start();
                 }
             } else if (splitted[0].equals("laziness") && splitted[1] != null) {
                 server.setLaziness(Double.parseDouble(splitted[1]));

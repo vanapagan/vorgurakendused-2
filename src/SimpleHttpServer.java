@@ -15,6 +15,7 @@ public class SimpleHttpServer {
 
     private static LinkedHashMap<String, MyRequest> in = new LinkedHashMap<String, MyRequest>();
     private static LinkedHashMap<String, Neighbor> peers = new LinkedHashMap<String, Neighbor>();
+    //private LinkedHashMap<String, Request> routingTable = new LinkedHashMap<String, Request>();
     private LinkedHashMap<String, Request> routingTable = new LinkedHashMap<String, Request>();
     private LinkedHashMap<String, MyRequest> myRequests = new LinkedHashMap<String, MyRequest>();
 
@@ -72,24 +73,24 @@ public class SimpleHttpServer {
     }
 
     public boolean routingTableContainsRequest(String id) {
-        if (getRoutingTable().containsKey(id)) {
-            System.out.println("/download request with an id: " + id + " has already been served");
+        if (routingTable.containsKey(id)) {
+            System.out.println("Routing table contains /download request with an id: " + id);
             return true;
         } else {
-            System.out.println("/download request with an id: " + id + " has not yet been served");
+            System.out.println("Routing table does not contain /download request with an id: " + id);
             return false;
         }
     }
 
-    public void addDownloadRequestToRoutingTable(String id, String url) {
+    public synchronized void addDownloadRequestToRoutingTable(String id, String url) {
         Request dlr = new Request(id, url, null);
-        getRoutingTable().put(id, dlr);
+        routingTable.put(id, dlr);
         System.out.println("/download request with an id: " + id + " has been added to the  routing table");
     }
 
     public void addFileRequestToRoutingTable(String id, String url) {
         Request dlr = new Request(id, null, url);
-        getRoutingTable().put(id, dlr);
+        routingTable.put(id, dlr);
         System.out.println("/file request with an id: " + id + " has been added to the  routing table");
     }
 

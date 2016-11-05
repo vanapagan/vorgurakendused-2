@@ -56,7 +56,6 @@ public class FileThread extends Thread {
             in.close();
 
             System.out.println(response.toString());
-
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (ProtocolException e) {

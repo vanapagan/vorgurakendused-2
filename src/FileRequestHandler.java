@@ -1,7 +1,10 @@
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -45,20 +48,20 @@ public class FileRequestHandler extends SimpleHttpServer implements HttpHandler{
 
             if (!routingTableContainsRequest(idParam)) {
                 addFileRequestToRoutingTable(idParam, from);
+                System.out.println("Going to return");
                 return;
             }
 
-            if (getMyRequests().containsKey(idParam)) {
+            if (getRoutingTable().containsKey(idParam) && from.equals("localhost:1215")) {
                 System.out.println("Received a response for my request with an id:'" + idParam + "' from: '" + from + "'");
+
                 InputStreamReader isr = new InputStreamReader(he.getRequestBody(), "utf-8");
-                BufferedReader br = new BufferedReader(isr);
-
-
 
             }
 
         }
 
+        /*
         Map<String, Object> parameters2 = new HashMap<>();
         InputStreamReader isr = new InputStreamReader(he.getRequestBody(), "utf-8");
         BufferedReader br = new BufferedReader(isr);
@@ -72,7 +75,7 @@ public class FileRequestHandler extends SimpleHttpServer implements HttpHandler{
         he.sendResponseHeaders(200, response2.length());
         OutputStream os2 = he.getResponseBody();
         os2.write(response2.toString().getBytes());
-        os2.close();
+        os2.close();*/
 
     }
 

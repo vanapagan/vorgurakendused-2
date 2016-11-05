@@ -114,7 +114,7 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
                     URL url = new URL("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "/download?" + "id=" + idParam + "&" + "url=" + urlParam);
                     System.out.println("Constructed url: " + url);
 
-                    new DownloadThread(super.getRoutingTable(), url).start();
+                    new DownloadThread(url).start();
                 }
             }
         }
