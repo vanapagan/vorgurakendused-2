@@ -15,7 +15,6 @@ public class SimpleHttpServer {
 
     private static LinkedHashMap<String, MyRequest> in = new LinkedHashMap<String, MyRequest>();
     private static LinkedHashMap<String, Neighbor> peers = new LinkedHashMap<String, Neighbor>();
-    //private LinkedHashMap<String, Request> routingTable = new LinkedHashMap<String, Request>();
     private LinkedHashMap<String, Request> routingTable = new LinkedHashMap<String, Request>();
     private LinkedHashMap<String, MyRequest> myRequests = new LinkedHashMap<String, MyRequest>();
 
@@ -33,12 +32,8 @@ public class SimpleHttpServer {
 
             server.createContext("/download", downloadHandler);
             server.createContext("/file", fileHandler);
-            server.createContext("/header", new Handlers.HeaderHandler());
-            server.createContext("/get", new Handlers.GetHandler());
-            server.createContext("/post", new Handlers.PostHandler());
             server.setExecutor(null);
             server.start();
-
 
             NetworkWatcher nw = new NetworkWatcher(peers);
             nw.start();
@@ -74,10 +69,8 @@ public class SimpleHttpServer {
 
     public boolean routingTableContainsRequest(String id) {
         if (routingTable.containsKey(id)) {
-            System.out.println("Routing table contains /download request with an id: " + id);
             return true;
         } else {
-            System.out.println("Routing table does not contain /download request with an id: " + id);
             return false;
         }
     }

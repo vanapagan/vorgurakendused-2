@@ -43,7 +43,7 @@ public class FileThread extends Thread {
 
             int responseCode = con.getResponseCode();
             System.out.println("\nSending 'POST' request to URL : " + url);
-            System.out.println("Post parameters : " + body);
+            System.out.println("Post body : " + body);
             System.out.println("Response Code : " + responseCode);
 
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));

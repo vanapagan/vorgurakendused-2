@@ -1,16 +1,11 @@
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URI;
+import java.net.URL;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Kristo on 31.10.2016.
@@ -21,6 +16,12 @@ public class FileRequestHandler extends SimpleHttpServer implements HttpHandler{
     public void handle(HttpExchange he) throws IOException {
         System.out.println("Received a /file request");
 
+        // fetch body's content for later use, before the stream is closed
+        String body = getRequestBody(he.getRequestBody());
+
+        long threadId = Thread.currentThread().getId();
+        System.out.println("Thread # " + threadId + " is doing this task (FileRequestHandler)");
+
         Map<String, Object> parameters = new HashMap<String, Object>();
         URI requestedUri = he.getRequestURI();
         String query = requestedUri.getRawQuery();
@@ -29,7 +30,10 @@ public class FileRequestHandler extends SimpleHttpServer implements HttpHandler{
 
         String response;
 
-        if (parameters.get("id") != null) {
+        String idParam = parameters.get("id").toString();
+        String from = he.getRequestHeaders().getFirst("Host");
+
+        if (idParam != null) {
             response = "OK";
             he.sendResponseHeaders(200, response.length());
         } else {
@@ -41,41 +45,48 @@ public class FileRequestHandler extends SimpleHttpServer implements HttpHandler{
         os.write(response.getBytes());
         os.close();
 
-        String idParam = parameters.get("id").toString();
-        String from = he.getRequestHeaders().getFirst("Host");
-
         if (idParam != null) {
 
+            /*
             if (!routingTableContainsRequest(idParam)) {
-                addFileRequestToRoutingTable(idParam, from);
+                System.out.println("Routing table does not contain request " + idParam);
+                //addFileRequestToRoutingTable(idParam, from);
+                System.out.println("Size of the routingTable: " + getRoutingTable().size());
+
                 System.out.println("Going to return");
                 return;
-            }
+            } else {
+                System.out.println("Routing table contains request " + idParam);
+                System.out.println("Size of the routingTable: " + getRoutingTable().size());
+            }*/
 
-            if (getRoutingTable().containsKey(idParam) && from.equals("localhost:1215")) {
+            if (getRoutingTable().containsKey(idParam) && getRoutingTable().get(idParam).getDownloadIp().equals("localhost:1215")) {
                 System.out.println("Received a response for my request with an id:'" + idParam + "' from: '" + from + "'");
+            } else {
+                System.out.println("Forward /file message to all neighbours, except the requester itself");
+                Set set = getPeers().entrySet();
 
-                InputStreamReader isr = new InputStreamReader(he.getRequestBody(), "utf-8");
+                Iterator iterator = set.iterator();
 
+                while (iterator.hasNext()) {
+                    Map.Entry me = (Map.Entry) iterator.next();
+                    if (!((Neighbor) me.getValue()).isAlive()) {
+                        continue;
+                    }
+                    // do not sent the requester itself
+                    if (((Neighbor) me.getValue()).getIp().equals(from)) {
+                        continue;
+                    }
+                    URL url = new URL("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "/file?" + "id=" + idParam);
+
+                    System.out.println("Constructed url: " + url);
+
+                    FileThread ft = new FileThread(url, body);
+                    ft.start();
+                }
             }
 
         }
-
-        /*
-        Map<String, Object> parameters2 = new HashMap<>();
-        InputStreamReader isr = new InputStreamReader(he.getRequestBody(), "utf-8");
-        BufferedReader br = new BufferedReader(isr);
-        String query2 = br.readLine();
-        parseQuery(query2, parameters2);
-        // send response
-        String response2 = "";
-        for (String key : parameters2.keySet()) {
-            response += key + " = " + parameters2.get(key) + "\n";
-        }
-        he.sendResponseHeaders(200, response2.length());
-        OutputStream os2 = he.getResponseBody();
-        os2.write(response2.toString().getBytes());
-        os2.close();*/
 
     }
 
@@ -113,6 +124,33 @@ public class FileRequestHandler extends SimpleHttpServer implements HttpHandler{
                 }
             }
         }
+    }
+
+    private String getRequestBody(InputStream is) {
+        BufferedReader br = null;
+        StringBuilder sb = new StringBuilder();
+
+        String line;
+        try {
+
+            br = new BufferedReader(new InputStreamReader(is));
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return  sb.toString();
     }
 
 }

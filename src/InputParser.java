@@ -32,7 +32,10 @@ public class InputParser extends Thread {
             String[] splitted = input.split(" ");
 
             if (splitted[0].equals("download")) {
-                System.out.println("---FORWARD---");
+                System.out.println("---SELF DOWNLOAD---");
+
+                long threadId = Thread.currentThread().getId();
+                System.out.println("Thread # " + threadId + " is doing this task (InputParser)");
 
                 String idParam = generateMyNumber();
                 String address = "http://google.com";
@@ -45,6 +48,7 @@ public class InputParser extends Thread {
                     continue;
                 } else {
                     server.addDownloadRequestToRoutingTable(idParam, "http://localhost:1215");
+                    System.out.println("Size of the routingTable: " + server.getRoutingTable().size());
                 }
 
                 Set set = server.getPeers().entrySet();

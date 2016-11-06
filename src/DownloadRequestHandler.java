@@ -15,6 +15,9 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
 
         System.out.println("Received a /download request");
 
+        long threadId = Thread.currentThread().getId();
+        System.out.println("Thread # " + threadId + " is doing this task (DownloadRequestHandler)");
+
         Map<String, Object> parameters = new HashMap<String, Object>();
         URI requestedUri = he.getRequestURI();
         String query = requestedUri.getRawQuery();
@@ -44,6 +47,7 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
                 return;
             } else {
                 addDownloadRequestToRoutingTable(idParam, urlParam);
+                System.out.println("Size of the routingTable: " + getRoutingTable().size());
             }
 
             double d = new Random().nextDouble();
@@ -109,6 +113,9 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
                 while (iterator.hasNext()) {
                     Map.Entry me = (Map.Entry) iterator.next();
                     if (!((Neighbor) me.getValue()).isAlive()) {
+                        continue;
+                    }
+                    if (((Neighbor) me.getValue()).getIp().equals(he.getRequestHeaders().getFirst("Host"))) {
                         continue;
                     }
                     URL url = new URL("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "/download?" + "id=" + idParam + "&" + "url=" + urlParam);
