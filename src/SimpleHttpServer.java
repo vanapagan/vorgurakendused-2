@@ -18,7 +18,7 @@ public class SimpleHttpServer {
     private LinkedHashMap<String, Request> routingTable = new LinkedHashMap<String, Request>();
     private LinkedHashMap<String, MyRequest> myRequests = new LinkedHashMap<String, MyRequest>();
 
-    private double laziness = 0.000001;
+    private double laziness = 0.9999;
 
     public void Start(int port) {
         try {
