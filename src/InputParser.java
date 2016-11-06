@@ -52,6 +52,11 @@ public class InputParser extends Thread {
                     System.out.println("Size of the routingTable: " + server.getRoutingTable().size());
                 }
 
+                if (server.getPeers() == null) {
+                    System.out.println("Sorry no neighbours in the network");
+                    continue;
+                }
+
                 Set set = server.getPeers().entrySet();
                 Iterator iterator = set.iterator();
                 while (iterator.hasNext()) {
