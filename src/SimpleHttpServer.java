@@ -14,24 +14,25 @@ public class SimpleHttpServer {
     private HttpServer server;
 
     private static LinkedHashMap<String, MyRequest> in = new LinkedHashMap<String, MyRequest>();
-    private static LinkedHashMap<String, Neighbor> peers = new LinkedHashMap<String, Neighbor>();
+    private LinkedHashMap<String, Neighbor> peers = new LinkedHashMap<String, Neighbor>();
     private LinkedHashMap<String, Request> routingTable = new LinkedHashMap<String, Request>();
     private LinkedHashMap<String, MyRequest> myRequests = new LinkedHashMap<String, MyRequest>();
 
-    private double laziness = 0.9999;
+    private double laziness = 0.000001;
 
     public void Start(int port) {
         try {
+
+            long threadId = Thread.currentThread().getId();
+            System.out.println("Thread # " + threadId + " is doing this task (DownloadRequestHandler)");
+
             this.port = port;
             server = HttpServer.create(new InetSocketAddress(port), 0);
             System.out.println("server started at " + port);
             server.createContext("/", new Handlers.RootHandler());
 
-            DownloadRequestHandler downloadHandler = new DownloadRequestHandler();
-            FileRequestHandler fileHandler = new FileRequestHandler();
-
-            server.createContext("/download", downloadHandler);
-            server.createContext("/file", fileHandler);
+            server.createContext("/download", new DownloadRequestHandler(routingTable, peers));
+            server.createContext("/file", new FileRequestHandler(routingTable, peers));
             server.setExecutor(null);
             server.start();
 
@@ -51,7 +52,7 @@ public class SimpleHttpServer {
         System.out.println("server stopped");
     }
 
-    public static LinkedHashMap<String, Neighbor> getPeers() {
+    public LinkedHashMap<String, Neighbor> getPeers() {
         return peers;
     }
 

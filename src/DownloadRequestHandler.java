@@ -8,7 +8,15 @@ import java.util.*;
 /**
  * Created by Kristo on 31.10.2016.
  */
-public class DownloadRequestHandler extends SimpleHttpServer implements HttpHandler{
+public class DownloadRequestHandler extends SimpleHttpServer implements HttpHandler {
+
+    private LinkedHashMap<String, Request> routingTable;
+    private LinkedHashMap<String, Neighbor> peers;
+
+    public DownloadRequestHandler (LinkedHashMap<String, Request> routingTable, LinkedHashMap<String, Neighbor> peers) {
+        this.routingTable = routingTable;
+        this.peers = peers;
+    }
 
     @Override
     public void handle(HttpExchange he) throws IOException {
@@ -34,6 +42,9 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
             he.sendResponseHeaders(422, response.length());
         }
 
+        //get host sender ip
+        String from = he.getRequestHeaders().getFirst("Host");
+
         OutputStream os = he.getResponseBody();
         os.write(response.getBytes());
         os.close();
@@ -43,11 +54,22 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
 
         if (idParam != null && urlParam != null) {
 
+            /*
             if (routingTableContainsRequest(idParam)) {
+                System.out.println("Routing table already contains request id: " + idParam);
                 return;
             } else {
                 addDownloadRequestToRoutingTable(idParam, urlParam);
                 System.out.println("Size of the routingTable: " + getRoutingTable().size());
+            }*/
+
+            if (routingTable.containsKey(idParam)) {
+                System.out.println("Routing table already contains request id: " + idParam);
+                return;
+            } else {
+                Request dlr = new Request(idParam, from, null);
+                routingTable.put(idParam, dlr);
+                System.out.println("Size of the routingTable: " + routingTable.size());
             }
 
             double d = new Random().nextDouble();
@@ -99,7 +121,7 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
                 String body = sb.toString();
                 System.out.println("ResponseBody constructed");
 
-                String url2 = "http://" + he.getRequestHeaders().getFirst("Host") + "/file?id=" + idParam;
+                String url2 = "http://" + from + "/file?id=" + idParam;
                 URL urlObj = new URL(url2);
                 FileThread ft = new FileThread(urlObj, body);
                 ft.start();
@@ -107,7 +129,7 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
             } else {
                 //TODO do not download, but send request to everyone else in the network
                 System.out.println("---FORWARD---");
-                Set set = getPeers().entrySet();
+                Set set = peers.entrySet();
 
                 Iterator iterator = set.iterator();
                 while (iterator.hasNext()) {
@@ -115,7 +137,8 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
                     if (!((Neighbor) me.getValue()).isAlive()) {
                         continue;
                     }
-                    if (((Neighbor) me.getValue()).getIp().equals(he.getRequestHeaders().getFirst("Host"))) {
+                    // do not sent to the requester itself
+                    if (((Neighbor) me.getValue()).getIp().equals(from)) {
                         continue;
                     }
                     URL url = new URL("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "/download?" + "id=" + idParam + "&" + "url=" + urlParam);
@@ -163,6 +186,6 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
         }
     }
 
-
-
 }
+
+

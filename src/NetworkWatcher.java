@@ -13,8 +13,8 @@ import java.util.Set;
 public class NetworkWatcher extends Thread {
 
     private LinkedHashMap<String, Neighbor> peers = new LinkedHashMap<String, Neighbor>();
-    private URL url = new URL("http://192.168.3.11:1215/getpeers");
-    //private URL url = new URL("http://www.tud.ttu.ee/im/Tarvo.Treier/");
+    //private URL url = new URL("http://192.168.3.11:1215/getpeers");
+    private URL url = new URL("http://www.tud.ttu.ee/im/Tarvo.Treier/");
 
     public NetworkWatcher(LinkedHashMap<String, Neighbor> peers) throws IOException {
         this.peers = peers;
@@ -49,12 +49,11 @@ public class NetworkWatcher extends Thread {
                 String result = resultBuilder.toString();
 
                 //in development
-                //String res = "[\"192.168.3.38:1215\", \"192.168.3.26:1215\"]";
-                //result = res;
+                String res = "[\"192.168.3.38:1215\", \"192.168.3.26:1215\"]";
+                result = res;
 
                 rd.close();
                 if (!result.equals("[]") && result.startsWith("[")) {
-
                     String[] arr = result.toString().split(",");
 
                     if (peers.size() > 0) {

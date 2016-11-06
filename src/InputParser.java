@@ -73,6 +73,8 @@ public class InputParser extends Thread {
             } else if (splitted[0].equals("laziness") && splitted[1] != null) {
                 server.setLaziness(Double.parseDouble(splitted[1]));
                 System.out.println("Laziness set to " + server.getLaziness());
+            } else if (splitted[0].equals("size")) {
+                System.out.println("Size of the routing table: " + server.getRoutingTable().size());
             }
 
         }

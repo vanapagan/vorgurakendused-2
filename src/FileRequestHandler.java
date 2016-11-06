@@ -10,7 +10,15 @@ import java.util.*;
 /**
  * Created by Kristo on 31.10.2016.
  */
-public class FileRequestHandler extends SimpleHttpServer implements HttpHandler{
+public class FileRequestHandler extends SimpleHttpServer implements HttpHandler {
+
+    private LinkedHashMap<String, Request> routingTable;
+    private LinkedHashMap<String, Neighbor> peers;
+
+    public FileRequestHandler (LinkedHashMap<String, Request> routingTable, LinkedHashMap<String, Neighbor> peers) {
+        this.routingTable = routingTable;
+        this.peers = peers;
+    }
 
     @Override
     public void handle(HttpExchange he) throws IOException {
@@ -47,24 +55,30 @@ public class FileRequestHandler extends SimpleHttpServer implements HttpHandler{
 
         if (idParam != null) {
 
-
-            if (!routingTableContainsRequest(idParam)) {
+            if (!routingTable.containsKey(idParam)) {
                 System.out.println("Routing table does not contain request " + idParam);
-                //addFileRequestToRoutingTable(idParam, from);
-                System.out.println("Size of the routingTable: " + getRoutingTable().size());
+                Request dlr = new Request(idParam, null, from);
+                routingTable.put(idParam, dlr);
+                System.out.println("Size of the routingTable: " + routingTable.size());
 
                 System.out.println("Going to return");
                 return;
             } else {
                 System.out.println("Routing table contains request " + idParam);
-                System.out.println("Size of the routingTable: " + getRoutingTable().size());
+                System.out.println("Size of the routingTable: " + routingTable.size());
             }
 
-            if (getRoutingTable().containsKey(idParam) && getRoutingTable().get(idParam).getDownloadIp().equals("localhost:1215")) {
-                System.out.println("Received a response for my request with an id:'" + idParam + "' from: '" + from + "'");
+            if (routingTable.containsKey(idParam) && routingTable.get(idParam).getDownloadIp().equals("localhost:1215")) {
+                routingTable.get(idParam).setFileIp(from);
+                System.out.println("Received a /file response for my request id:'" + idParam + "' from: '" + from + "'");
+            } else if (routingTable.containsKey(idParam) && !routingTable.get(idParam).getDownloadIp().equals("localhost:1215") && routingTable.get(idParam).getDownloadIp() != null) {
+                URL url = new URL("http://" + routingTable.get(idParam).getDownloadIp() + ":1215" + "/file?" + "id=" + idParam);
+                System.out.println("Constructed url: " + url);
+                FileThread ft = new FileThread(url, body);
+                ft.start();
             } else {
                 System.out.println("Forward /file message to all neighbours, except the requester itself");
-                Set set = getPeers().entrySet();
+                Set set = peers.entrySet();
 
                 Iterator iterator = set.iterator();
 
@@ -73,7 +87,7 @@ public class FileRequestHandler extends SimpleHttpServer implements HttpHandler{
                     if (!((Neighbor) me.getValue()).isAlive()) {
                         continue;
                     }
-                    // do not sent the requester itself
+                    // do not sent to the requester itself
                     if (((Neighbor) me.getValue()).getIp().equals(from)) {
                         continue;
                     }
