@@ -10,7 +10,7 @@ import java.util.*;
 /**
  * Created by Kristo on 31.10.2016.
  */
-public class FileRequestHandler extends SimpleHttpServer implements HttpHandler {
+public class FileRequestHandler implements HttpHandler {
 
     private LinkedHashMap<String, Request> routingTable;
     private LinkedHashMap<String, Neighbor> peers;
@@ -60,7 +60,6 @@ public class FileRequestHandler extends SimpleHttpServer implements HttpHandler 
                 Request dlr = new Request(idParam, null, from);
                 routingTable.put(idParam, dlr);
                 System.out.println("Size of the routingTable: " + routingTable.size());
-
                 System.out.println("Going to return");
                 return;
             } else {
@@ -69,11 +68,11 @@ public class FileRequestHandler extends SimpleHttpServer implements HttpHandler 
             }
 
             if (routingTable.containsKey(idParam) && routingTable.get(idParam).getDownloadIp() == null) {
-                System.out.println("/file request " + idParam + " has not been requested through this server and will be ignored!");
+                System.out.println("/file request " + idParam + " has not been previously requested through this server and will be ignored!");
                 return;
             }
 
-            if (routingTable.containsKey(idParam) && routingTable.get(idParam).getDownloadIp() == null && routingTable.get(idParam).getFileIp() == null) {
+            if (routingTable.containsKey(idParam) && routingTable.get(idParam).getDownloadIp() != null && routingTable.get(idParam).getFileIp() != null) {
                 System.out.println("/file request " + idParam + " has already been served through this server and will be ignored!");
                 return;
             }

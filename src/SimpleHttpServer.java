@@ -31,7 +31,7 @@ public class SimpleHttpServer {
             System.out.println("server started at " + port);
             server.createContext("/", new Handlers.RootHandler());
 
-            server.createContext("/download", new DownloadRequestHandler(routingTable, peers));
+            server.createContext("/download", new DownloadRequestHandler(routingTable, peers, laziness));
             server.createContext("/file", new FileRequestHandler(routingTable, peers));
             server.setExecutor(null);
             server.start();

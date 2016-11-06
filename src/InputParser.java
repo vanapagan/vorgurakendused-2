@@ -38,13 +38,14 @@ public class InputParser extends Thread {
                 System.out.println("Thread # " + threadId + " is doing this task (InputParser)");
 
                 String idParam = generateMyNumber();
-                String address = "http://google.com";
-                //String address = splitted[1];
+                //String address = "http://google.com";
+                String address = splitted[1];
 
                 //MyRequest myr = new MyRequest(idParam, address);
                 //server.getMyRequests().put(idParam, myr);
 
                 if (server.routingTableContainsRequest(idParam)) {
+                    System.out.println("Routing table already contains a request id '" + idParam + "'");
                     continue;
                 } else {
                     server.addDownloadRequestToRoutingTable(idParam, "http://localhost:1215");

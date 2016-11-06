@@ -8,14 +8,16 @@ import java.util.*;
 /**
  * Created by Kristo on 31.10.2016.
  */
-public class DownloadRequestHandler extends SimpleHttpServer implements HttpHandler {
+public class DownloadRequestHandler implements HttpHandler {
 
     private LinkedHashMap<String, Request> routingTable;
     private LinkedHashMap<String, Neighbor> peers;
+    private double laziness;
 
-    public DownloadRequestHandler (LinkedHashMap<String, Request> routingTable, LinkedHashMap<String, Neighbor> peers) {
+    public DownloadRequestHandler (LinkedHashMap<String, Request> routingTable, LinkedHashMap<String, Neighbor> peers, double laziness) {
         this.routingTable = routingTable;
         this.peers = peers;
+        this.laziness = laziness;
     }
 
     @Override
@@ -66,7 +68,7 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
             double d = new Random().nextDouble();
             System.out.println(d);
 
-            if (d < getLaziness()) {
+            if (d < laziness) {
                 //TODO download file and construct /file post message
                 System.out.println("---DOWNLOAD---");
                 StringBuilder result = new StringBuilder();
