@@ -52,7 +52,7 @@ public class InputParser extends Thread {
                     System.out.println("Size of the routingTable: " + server.getRoutingTable().size());
                 }
 
-                if (server.getPeers() == null) {
+                if (server.getPeers().entrySet() == null) {
                     System.out.println("Sorry no neighbours in the network");
                     continue;
                 }
