@@ -1,10 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
+import java.net.*;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -29,7 +26,18 @@ public class NetworkWatcher extends Thread {
                 //System.out.println("Updated network isAlive HashTable " + new SimpleDateFormat("HH:mm:ss dd.MM.yyyy", Locale.UK).format(new Date()));
 
                 StringBuilder result = new StringBuilder();
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                HttpURLConnection conn = null;
+
+                try {
+                    conn = (HttpURLConnection) url.openConnection();
+                    conn.setConnectTimeout(5000);
+                    conn.setReadTimeout(5000);
+                } catch (SocketTimeoutException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 conn.setRequestMethod("GET");
                 BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 String line;
@@ -38,7 +46,8 @@ public class NetworkWatcher extends Thread {
                     result.append(line);
                 }
                 rd.close();
-                if (!result.equals("[]")) {
+                if (!result.toString().equals("[]") && result.toString().startsWith("[")) {
+                    System.out.println(result);
                     //String res = "[\"192.168.3.38:1215\", \"192.168.3.26:1215\"]";
                     String[] arr = result.toString().split(",");
                     //String[] arr = res.toString().split(",");
@@ -47,8 +56,8 @@ public class NetworkWatcher extends Thread {
                         Set set = peers.entrySet();
 
                         Iterator iterator = set.iterator();
-                        while(iterator.hasNext()) {
-                            Map.Entry me = (Map.Entry)iterator.next();
+                        while (iterator.hasNext()) {
+                            Map.Entry me = (Map.Entry) iterator.next();
                             ((Neighbor) me.getValue()).setAlive(false);
                         }
                     }
