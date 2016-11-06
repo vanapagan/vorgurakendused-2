@@ -68,12 +68,12 @@ public class InputParser extends Thread {
                         URL url = null;
                         url = new URL(address);
 
-                        HttpURLConnection conn = null;
+                        HttpURLConnection conn;
                         conn = (HttpURLConnection) url.openConnection();
 
                         conn.setRequestMethod("GET");
 
-                        BufferedReader rd = null;
+                        BufferedReader rd;
                         rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
                         String line;
