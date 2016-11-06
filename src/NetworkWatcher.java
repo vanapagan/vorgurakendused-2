@@ -55,7 +55,6 @@ public class NetworkWatcher extends Thread {
                 rd.close();
                 if (!result.equals("[]") && result.startsWith("[")) {
 
-                    //String[] arr = result.toString().split(",");
                     String[] arr = result.toString().split(",");
 
                     if (peers.size() > 0) {

@@ -47,7 +47,7 @@ public class FileRequestHandler extends SimpleHttpServer implements HttpHandler{
 
         if (idParam != null) {
 
-            /*
+
             if (!routingTableContainsRequest(idParam)) {
                 System.out.println("Routing table does not contain request " + idParam);
                 //addFileRequestToRoutingTable(idParam, from);
@@ -58,7 +58,7 @@ public class FileRequestHandler extends SimpleHttpServer implements HttpHandler{
             } else {
                 System.out.println("Routing table contains request " + idParam);
                 System.out.println("Size of the routingTable: " + getRoutingTable().size());
-            }*/
+            }
 
             if (getRoutingTable().containsKey(idParam) && getRoutingTable().get(idParam).getDownloadIp().equals("localhost:1215")) {
                 System.out.println("Received a response for my request with an id:'" + idParam + "' from: '" + from + "'");
