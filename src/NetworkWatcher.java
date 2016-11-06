@@ -25,7 +25,7 @@ public class NetworkWatcher extends Thread {
             while (true) {
                 //System.out.println("Updated network isAlive HashTable " + new SimpleDateFormat("HH:mm:ss dd.MM.yyyy", Locale.UK).format(new Date()));
 
-                StringBuilder result = new StringBuilder();
+                StringBuilder resultBuilder = new StringBuilder();
                 HttpURLConnection conn = null;
 
                 try {
@@ -43,14 +43,20 @@ public class NetworkWatcher extends Thread {
                 String line;
 
                 while ((line = rd.readLine()) != null) {
-                    result.append(line);
+                    resultBuilder.append(line);
                 }
+
+                String result = resultBuilder.toString();
+
+                //in development
+                //String res = "[\"192.168.3.38:1215\", \"192.168.3.26:1215\"]";
+                //result = res;
+
                 rd.close();
-                if (!result.toString().equals("[]") && result.toString().startsWith("[")) {
-                    System.out.println(result);
-                    //String res = "[\"192.168.3.38:1215\", \"192.168.3.26:1215\"]";
+                if (!result.equals("[]") && result.startsWith("[")) {
+
+                    //String[] arr = result.toString().split(",");
                     String[] arr = result.toString().split(",");
-                    //String[] arr = res.toString().split(",");
 
                     if (peers.size() > 0) {
                         Set set = peers.entrySet();
