@@ -54,15 +54,6 @@ public class DownloadRequestHandler extends SimpleHttpServer implements HttpHand
 
         if (idParam != null && urlParam != null) {
 
-            /*
-            if (routingTableContainsRequest(idParam)) {
-                System.out.println("Routing table already contains request id: " + idParam);
-                return;
-            } else {
-                addDownloadRequestToRoutingTable(idParam, urlParam);
-                System.out.println("Size of the routingTable: " + getRoutingTable().size());
-            }*/
-
             if (routingTable.containsKey(idParam)) {
                 System.out.println("Routing table already contains request id: " + idParam);
                 return;

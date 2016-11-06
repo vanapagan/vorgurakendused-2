@@ -68,11 +68,23 @@ public class FileRequestHandler extends SimpleHttpServer implements HttpHandler 
                 System.out.println("Size of the routingTable: " + routingTable.size());
             }
 
+            if (routingTable.containsKey(idParam) && routingTable.get(idParam).getDownloadIp() == null) {
+                System.out.println("/file request " + idParam + " has not been requested through this server and will be ignored!");
+                return;
+            }
+
+            if (routingTable.containsKey(idParam) && routingTable.get(idParam).getDownloadIp() == null && routingTable.get(idParam).getFileIp() == null) {
+                System.out.println("/file request " + idParam + " has already been served through this server and will be ignored!");
+                return;
+            }
+
             if (routingTable.containsKey(idParam) && routingTable.get(idParam).getDownloadIp().equals("localhost:1215")) {
                 routingTable.get(idParam).setFileIp(from);
                 System.out.println("Received a /file response for my request id:'" + idParam + "' from: '" + from + "'");
+                System.out.println("RESPONSE for my request '" + idParam + "' : " + body);
             } else if (routingTable.containsKey(idParam) && !routingTable.get(idParam).getDownloadIp().equals("localhost:1215") && routingTable.get(idParam).getDownloadIp() != null) {
-                URL url = new URL("http://" + routingTable.get(idParam).getDownloadIp() + ":1215" + "/file?" + "id=" + idParam);
+                routingTable.get(idParam).setFileIp(from);
+                URL url = new URL("http://" + routingTable.get(idParam).getDownloadIp() + "/file?" + "id=" + idParam);
                 System.out.println("Constructed url: " + url);
                 FileThread ft = new FileThread(url, body);
                 ft.start();
