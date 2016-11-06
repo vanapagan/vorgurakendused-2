@@ -60,7 +60,7 @@ public class FileRequestHandler implements HttpHandler {
                 Request dlr = new Request(idParam, null, from);
                 routingTable.put(idParam, dlr);
                 System.out.println("Size of the routingTable: " + routingTable.size());
-                System.out.println("Going to return");
+                System.out.println("Nothing to do here, going to return");
                 return;
             } else {
                 System.out.println("Routing table contains request " + idParam);

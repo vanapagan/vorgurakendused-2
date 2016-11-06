@@ -1,9 +1,12 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Kristo on 20.10.2016.
@@ -32,17 +35,19 @@ public class InputParser extends Thread {
             String[] splitted = input.split(" ");
 
             if (splitted[0].equals("download")) {
-                System.out.println("---SELF DOWNLOAD---");
+                System.out.println("---CLI API---");
 
                 long threadId = Thread.currentThread().getId();
                 System.out.println("Thread # " + threadId + " is doing this task (InputParser)");
 
                 String idParam = generateMyNumber();
-                //String address = "http://google.com";
-                String address = splitted[1];
+                String address;
 
-                //MyRequest myr = new MyRequest(idParam, address);
-                //server.getMyRequests().put(idParam, myr);
+                if (splitted.length == 1) {
+                    address = "http://www.tud.ttu.ee/im/Tarvo.Treier/";
+                } else {
+                    address = splitted[1].trim();
+                }
 
                 if (server.routingTableContainsRequest(idParam)) {
                     System.out.println("Routing table already contains a request id '" + idParam + "'");
@@ -52,30 +57,98 @@ public class InputParser extends Thread {
                     System.out.println("Size of the routingTable: " + server.getRoutingTable().size());
                 }
 
-                if (server.getPeers().entrySet() == null) {
-                    System.out.println("Sorry no neighbours in the network");
-                    continue;
-                }
+                double d = new Random().nextDouble();
+                System.out.println(d);
 
-                Set set = server.getPeers().entrySet();
-                Iterator iterator = set.iterator();
-                while (iterator.hasNext()) {
-                    Map.Entry me = (Map.Entry) iterator.next();
-
-                    if (!((Neighbor) me.getValue()).isAlive()) {
-                        continue;
-                    }
-
-                    URL url = null;
-
+                if (d < server.getLaziness()) {
+                    //TODO download file and print it here
                     try {
-                        url = new URL("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "/download?" + "id=" + idParam + "&url=" + address);
+                        System.out.println("---DOWNLOAD---");
+                        StringBuilder result = new StringBuilder();
+                        URL url = null;
+                        url = new URL(address);
+
+                        HttpURLConnection conn = null;
+                        conn = (HttpURLConnection) url.openConnection();
+
+                        conn.setRequestMethod("GET");
+
+                        BufferedReader rd = null;
+                        rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+                        String line;
+                        int status = 0;
+                        status = conn.getResponseCode();
+
+                        String[] contentTypeArray = conn.getContentType().split(";");
+                        String mime;
+
+                        if (contentTypeArray[0] != null) {
+                            mime = contentTypeArray[0];
+                        } else {
+                            mime = "unknown";
+                        }
+                        while ((line = rd.readLine()) != null) {
+                            result.append(line);
+                        }
+
+                        rd.close();
+
+                        String content = result.toString();
+
+                        StringBuilder sb = new StringBuilder();
+                        if (conn.getResponseCode() != 200) {
+                            System.out.println("Http error " + conn.getResponseCode());
+                            sb.append("{\"status\":");
+                            sb.append(conn.getResponseCode());
+                            sb.append("}");
+                        } else {
+                            sb.append("{\"status\":");
+                            sb.append(status);
+                            sb.append(", \"mime-type\":\"");
+                            sb.append(mime + "\", ");
+                            sb.append("\"content\":");
+                            sb.append("\"" + content + "\"");
+                            sb.append("}");
+                        }
+
+                        String body = sb.toString();
+                        System.out.println("ResponseBody constructed");
+
+                        System.out.println("RESPONSE to my request id '" + idParam + "' : " + body);
+
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    } catch (ProtocolException e) {
+                        e.printStackTrace();
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    System.out.println("Constructed url: " + url);
-                    new DownloadThread(url).start();
+                } else {
+                    //TODO do not download, but send request to everyone else in the network
+                    System.out.println("---FORWARD---");
+                    Set set = server.getPeers().entrySet();
+
+                    Iterator iterator = set.iterator();
+                    while (iterator.hasNext()) {
+                        Map.Entry me = (Map.Entry) iterator.next();
+                        if (!((Neighbor) me.getValue()).isAlive()) {
+                            continue;
+                        }
+                        URL url = null;
+                        try {
+                            url = new URL("http://" + ((Neighbor) me.getValue()).getIp() + ":" + ((Neighbor) me.getValue()).getPort() + "/download?" + "id=" + idParam + "&" + "url=" + address);
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println("Constructed url: " + url);
+
+                        new DownloadThread(url).start();
+                    }
                 }
+                System.out.println("Finished dealing with the  CLI operation '" + input + "'");
             } else if (splitted[0].equals("laziness") && splitted[1] != null) {
                 server.setLaziness(Double.parseDouble(splitted[1]));
                 System.out.println("Laziness set to " + server.getLaziness());
