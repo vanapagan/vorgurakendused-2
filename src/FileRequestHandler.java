@@ -93,7 +93,7 @@ public class FileRequestHandler implements HttpHandler {
                         System.out.println("Couldn't decode content");
                     }
                 } else {
-                    System.out.println("Response body is no in an accepted format");
+                    System.out.println("Response body is not in an accepted format for json parsing");
                 }
             } else if (routingTable.containsKey(idParam) && !routingTable.get(idParam).getDownloadIp().equals("localhost:1215") && routingTable.get(idParam).getDownloadIp() != null) {
                 routingTable.get(idParam).setFileIp(from);
