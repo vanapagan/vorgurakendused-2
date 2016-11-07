@@ -3,7 +3,6 @@ import com.sun.net.httpserver.HttpHandler;
 
 import java.io.*;
 import java.net.URI;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.util.*;
 
@@ -76,25 +75,9 @@ public class FileRequestHandler implements HttpHandler {
                 System.out.println("/file request " + idParam + " has already been served through this server and will be ignored!");
                 return;
             }
-
+            /*
             if (routingTable.containsKey(idParam) && routingTable.get(idParam).getDownloadIp().equals("localhost:1215")) {
-                routingTable.get(idParam).setFileIp(from);
-                System.out.println("Received a /file response for my request id:'" + idParam + "' from: '" + from + "'");
-                System.out.println("RESPONSE for my request '" + idParam + "' : " + body);
-                String[] details = body.split(",");
-                if (details.length == 3) {
-                    String[] details2 = details[2].trim().split(":");
-                    String bodyEncoded = details2[1].trim().split("\"")[1];
-                    if (bodyEncoded != null) {
-                        byte[] bodyDecodedArr = Base64.getDecoder().decode(bodyEncoded);
-                        String bodyDecoded = new String(bodyDecodedArr, "UTF-8");
-                        System.out.println("Content decoded: " + bodyDecoded);
-                    } else {
-                        System.out.println("Couldn't decode content");
-                    }
-                } else {
-                    System.out.println("Response body is not in an accepted format for json parsing");
-                }
+
             } else if (routingTable.containsKey(idParam) && !routingTable.get(idParam).getDownloadIp().equals("localhost:1215") && routingTable.get(idParam).getDownloadIp() != null) {
                 routingTable.get(idParam).setFileIp(from);
                 URL url = new URL("http://" + routingTable.get(idParam).getDownloadIp() + "/file?" + "id=" + idParam);
@@ -123,6 +106,23 @@ public class FileRequestHandler implements HttpHandler {
                     FileThread ft = new FileThread(url, body);
                     ft.start();
                 }
+            }*/
+            routingTable.get(idParam).setFileIp(from);
+            System.out.println("Received a /file response for my request id:'" + idParam + "' from: '" + from + "'");
+            System.out.println("RESPONSE for my request '" + idParam + "' : " + body);
+            String[] details = body.split(",");
+            if (details.length == 3) {
+                String[] details2 = details[2].trim().split(":");
+                String bodyEncoded = details2[1].trim().split("\"")[1];
+                if (bodyEncoded != null) {
+                    byte[] bodyDecodedArr = Base64.getDecoder().decode(bodyEncoded);
+                    String bodyDecoded = new String(bodyDecodedArr, "UTF-8");
+                    System.out.println("Content decoded: " + bodyDecoded);
+                } else {
+                    System.out.println("Couldn't decode content");
+                }
+            } else {
+                System.out.println("Response body is not in an accepted format for json parsing");
             }
 
         }
