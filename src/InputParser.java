@@ -22,7 +22,7 @@ public class InputParser extends Thread {
     }
 
     public static String generateMyNumber() {
-        int aNumber = 0;
+        int aNumber;
         aNumber = (int) ((Math.random() * 9000000) + 1000000);
         return Integer.toString(aNumber);
     }
@@ -30,12 +30,12 @@ public class InputParser extends Thread {
     public void run() {
         while (scanner.hasNextLine()) {
             String input = scanner.nextLine();
+            System.out.println("---CLI API---");
             System.out.println("You entered: " + input);
 
             String[] splitted = input.split(" ");
 
             if (splitted[0].equals("download")) {
-                System.out.println("---CLI API---");
 
                 long threadId = Thread.currentThread().getId();
                 System.out.println("Thread # " + threadId + " is doing this task (InputParser)");
@@ -154,6 +154,8 @@ public class InputParser extends Thread {
                 System.out.println("Laziness set to " + server.getLaziness());
             } else if (splitted[0].equals("size")) {
                 System.out.println("Size of the routing table: " + server.getRoutingTable().size());
+            } else {
+                continue;
             }
 
         }
