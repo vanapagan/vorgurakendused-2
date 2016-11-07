@@ -54,6 +54,8 @@ public class InputParser extends Thread {
                     continue;
                 } else {
                     server.addDownloadRequestToRoutingTable(idParam, "http://localhost:1215");
+                    MyRequest myr = new MyRequest(idParam, address);
+                    server.getMyRequests().put(idParam, myr);
                     System.out.println("Size of the routingTable: " + server.getRoutingTable().size());
                 }
 

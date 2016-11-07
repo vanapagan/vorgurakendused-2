@@ -32,7 +32,7 @@ public class SimpleHttpServer {
             server.createContext("/", new Handlers.RootHandler());
 
             server.createContext("/download", new DownloadRequestHandler(routingTable, peers, laziness));
-            server.createContext("/file", new FileRequestHandler(routingTable, peers));
+            server.createContext("/file", new FileRequestHandler(routingTable, peers, myRequests));
             server.setExecutor(null);
             server.start();
 
